@@ -21,7 +21,7 @@ public:
   ViewerData(); //default
 
   void pixelToWorld(const int& wx, const int& wx, Vec &posWorld);
-  void pixelDirection2Wolrd(const int& wx, const int& wx, Vec &versor); //versor saindo do pixel wx,wy apontando para o zfar (util para o raytrace)
+  void pixelDirection2World(const int& wx, const int& wx, Vec &versor); //versor saindo do pixel wx,wy apontando para o zfar (util para o raytrace)
 
   void setWindowSize(int win_width, int win_height);
   void setCamera(const Camera &camera);
