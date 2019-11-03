@@ -20,6 +20,7 @@ public:
   Vec   color;
 
   Material();
+  Material(const Material &material);
   Material(const float &ks,const &float kd,const float &n_shiny,const Vec &color):
   ks(ks), kd(kd), n_shiny(n_shiny), color(color) {}
 
@@ -33,19 +34,19 @@ public:
   Vec pos;
   Material material;
 
-  Object(Material material, Vec pos);
-  virtual void intersectLine(const Vec &p0, const Vec &p1, Vec &point, Vec &normal) = 0;
-  virtual bool intersectRay(const Vec &orig, const Vec &dir, double &distance) = 0;
+  Object(Material material, Vec pos): material(material), pos(pos) {}
+  virtual bool intersectRay(const Vec &orig, const Vec &dir, Vec &point, double &distance) = 0;
+  virtual void normalAt(const Vec &point, Vec &normal) = 0;
 };
 //#############################################################################
 
 class Sphere:public Object{
 public:
-  float r;
+  float radius;
 
-  Sphere(Material material, Vec pos, float r):Object(material, pos), r(r) {}
-  void intersectLine(const Vec &p0, const Vec &p1, Vec &point, Vec &normal);
-  bool intersectRay(const Vec &orig, const Vec &dir, double &distance);
+  Sphere(Material material, Vec pos, float radius):Object(material, pos), radius(radius) {}
+  bool intersectRay(const Vec &orig, const Vec &dir, Vec &point, double &distance);
+  void normalAt(const Vec &point, Vec &normal);
 };
 
 class Plane:public Object{
@@ -53,6 +54,6 @@ public:
   Vec normal;
 
   Plane(Material material, Vec pos, Vec normal):Object(material, pos), normal(normal){}
-  void intersectLine(const Vec &p0, const Vec &p1, Vec &point, Vec &normal);
-  bool intersectRay(const Vec &orig, const Vec &dir, double &distance);
+  bool intersectRay(const Vec &orig, const Vec &dir, Vec &point, double &distance);
+  void normalAt(const Vec &point, Vec &normal);
 };
