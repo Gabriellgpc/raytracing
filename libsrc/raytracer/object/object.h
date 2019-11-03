@@ -34,7 +34,7 @@ public:
   Material material;
 
   Object(Material material, Vec pos);
-  virtual bool intersectLine(const Vec &p0, const Vec &p1, Vec &point, Vec &normal) = 0;
+  virtual void intersectLine(const Vec &p0, const Vec &p1, Vec &point, Vec &normal) = 0;
   virtual bool intersectRay(const Vec &orig, const Vec &dir, double &distance) = 0;
 };
 //#############################################################################
@@ -44,7 +44,7 @@ public:
   float r;
 
   Sphere(Material material, Vec pos, float r):Object(material, pos), r(r) {}
-  bool intersectLine(const Vec &p0, const Vec &p1, Vec &point, Vec &normal);
+  void intersectLine(const Vec &p0, const Vec &p1, Vec &point, Vec &normal);
   bool intersectRay(const Vec &orig, const Vec &dir, double &distance);
 };
 
@@ -53,6 +53,6 @@ public:
   Vec normal;
 
   Plane(Material material, Vec pos, Vec normal):Object(material, pos), normal(normal){}
-  bool intersectLine(const Vec &p0, const Vec &p1, Vec &point, Vec &normal);
+  void intersectLine(const Vec &p0, const Vec &p1, Vec &point, Vec &normal);
   bool intersectRay(const Vec &orig, const Vec &dir, double &distance);
 };
