@@ -58,7 +58,7 @@ void init(int win_width, int win_height)
   //Criando e posicionando objetos e pontos de luz no mundo
   for(int i = 0; i < NUM_SPHERES; i++)
   {
-    color    = randVec(1.0);
+    color    = randVec();
     pos      = randPositionInCube(VertexA, VertexB);
     material = Material::randMaterial();
     rayTracer.world.objs.push_back(new Sphere(pos, Material::randMaterial(), randf(R_MAX)));
@@ -66,10 +66,10 @@ void init(int win_width, int win_height)
 
   for(int i = 0; i < NUM_PLANES; i++)
   {
-    color    = randVec(1.0);
+    color    = randVec();
     pos      = randPositionInCube(VertexA, VertexB);
     material = Material::randMaterial();
-    rayTracer.world.objs.push_back(new Plane(pos, Material::randMaterial(), randVec(1.0).normalizze() ));
+    rayTracer.world.objs.push_back(new Plane(pos, Material::randMaterial(), randVec().normalize() ));
   }
 
   for(int i = 0; i < NUM_LIGHT_SRC; i++)

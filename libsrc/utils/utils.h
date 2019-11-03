@@ -4,9 +4,8 @@
 
 typedef glm::vec3 Vec;
 
-float randf(float max);                             //gera um numero aleatorio entre 0.0 e max
-Vec   randVec(float max);                           //gera um vec3 com floats de 0.0 a max
-Vec   randPositionInCube(Vec vertexA, Vec vertexB); //gera uma coordenada dentro de um cubo formado pelos vertices A e B
-void  rotate(Vec axis, float ang);
+float randf();                             //gera um numero aleatorio entre 0.0 e 1.0
+Vec   randVec();                           //gera um vec3 com floats de 0.0 a 1.0
+Vec   randPositionInCube(Vec center, int edge); //gera uma coordenada dentro de um cubo de aresta edge e com centro em pos
 
 #endif
