@@ -9,8 +9,11 @@ float &ImageRGBf::operator()(uint i, uint j, uint k){
 void RayTracer::rayTrace(ImageRGBf &img,int numRefletion){
   Vec ray;
   //usar OpenMP aqui!
-  for(int x=0;x<img.width;x++){
-    for (int y = 0; y < height; y++) {
+  #pragma omp parallel for
+  for(int x=0;x<img.width;x++)
+  {
+    for (int y = 0; y < height; y++)
+    {
         viewer.pixelDirection2Wolrd(x,y, ray);
         img.setColor(x, y, trace(ray, numRefletion));
     }

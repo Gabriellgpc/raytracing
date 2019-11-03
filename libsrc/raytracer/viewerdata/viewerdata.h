@@ -18,7 +18,7 @@ private:
   //deve ser chamada toda vez que algum parametro deste objeto eh atualizado
   void updateProjection();
 public:
-  Projection(); //default
+  ViewerData(); //default
 
   void pixelToWorld(const int& wx, const int& wx, Vec &posWorld);
   void pixelDirection2Wolrd(const int& wx, const int& wx, Vec &versor); //versor saindo do pixel wx,wy apontando para o zfar (util para o raytrace)
