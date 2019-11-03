@@ -1,4 +1,4 @@
-#include "utils.h"
+#include <utils.h>
 
 class Camera{
 public:
@@ -8,20 +8,20 @@ public:
 };
 
 class ViewerData{
-private:
+public:
   Camera camera;
+private:
   float  anglePespective;
   float  znear, zfar;
   float  win_width, win_height;
 
   //atualiza matriz de projecao (para garantir o funcionamento da funcao gluUnProject)
   //deve ser chamada toda vez que algum parametro deste objeto eh atualizado
-  void updateProjection();
+  void updateMatrix();
 public:
-  Projection(); //default
+  ViewerData(); //default
 
-  void pixelToWorld(const int& wx, const int& wx, Vec &posWorld);
-  void pixelDirection2World(const int& wx, const int& wx, Vec &versor); //versor saindo do pixel wx,wy apontando para o zfar (util para o raytrace)
+  void pixelToWorld(const int& wx, const int& wy, Vec &posWorld);
 
   void setWindowSize(int win_width, int win_height);
   void setCamera(const Camera &camera);
