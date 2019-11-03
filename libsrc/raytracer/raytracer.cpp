@@ -16,3 +16,8 @@ void RayTracer::rayTrace(ImageRGBf &img,int numRefletion){
     }
   }
 }
+
+Vec Raytrace::trace(const Vec &ray, int numReflection){	
+	
+
+}
