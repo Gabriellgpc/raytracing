@@ -24,7 +24,7 @@ public:
   RayTracer();
   //Metodo de renderizacao
   //WARNING: levar em conta objetos fora do frustum ??
-  void rayTrace(ImageRGBf &img, int numRefletion);
+  void rayTrace(ImageRGBf &img, int numReflection);
 private:
   //metodos auxiliares
   Vec trace(const Vec &ray, int n);           //Traca um raio saindo de um pixel e retorna uma cor

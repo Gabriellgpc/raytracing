@@ -22,11 +22,13 @@ void RayTracer::rayTrace(ImageRGBf &img,int numRefletion){
 
 Vec Raytracer::trace(const Vec &ray, int numReflection){		
 	Vec point;
+	Vec resultColor;
 
 	//calcular o ponto de intersecao mais proximo
-	closestPoint(ray, point);
-
 	
+	for(int i=0;i< numReflection;i++){
+		closestPoint(ray, point);
+	}
 	
 }
 void Raytracer::closestPoint(const Vec &ray,Vec &point){
@@ -34,7 +36,7 @@ void Raytracer::closestPoint(const Vec &ray,Vec &point){
 	Vec closest = (*world.objs.begin()).pos; 
 	for(auto it = world.objs.begin()+1;it != world.objs.end();it++){
 		Vec pointTmp;
-		if(obj.intersectPoint(ray/*line*/, pointTmp)){
+		if(obj.intersectPoint(){
 			if(distanceToCamera(pointTmp) < distanceToCamera(closest)){
 				closest = PointTmp;
 			}
