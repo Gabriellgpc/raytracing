@@ -30,4 +30,6 @@ private:
   Vec trace(const Vec &ray, int n);           //Traca um raio saindo de um pixel e retorna uma cor
   void closestPoint(const Vec &ray,Vec &point);             //Calcula ponto de intersecao entre o raio e o objeto mais proximo
   void shade(const Vec &point,const Vec &ray,Vec &color);   //Aplica a equacao de iluminacao, retorna uma cor
+
+  double distanceToCamera(const Vec &point);
 };
