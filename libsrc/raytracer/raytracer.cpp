@@ -58,21 +58,20 @@ Vec Raytracer::trace(const Vec &rayStart,const Vec &rayDir, int numReflection){
 void Raytracer::closestPoint(const Vec &orig,const Vec &dir,Vec &point,Object * obj){
 	/*itera os objetos, calcula o ponto de inteseccao  e pega o menor deles*/
 
-	Vec closest(9999999,9999999,999999);
+	Vec closest(9999999,9999999,999999),normal;
 	double smallerDistance=999999;
 
 	for(auto it = world.objs.begin();it != world.objs.end();it++){
 		Vec pointTmp;
 		double distTmp;
-		if((*it)->intersectRay(orig,dir,PointTmp,distTmp)){// ===> TODO
+		if((*it)->intersectRay(orig,dir,distTmp)){// ===> TODO
 			if(distTmp < smallerDistance){
-				closest = PointTmp;
 				smallerDistance = distTmp;
 				obj = *it;
 			}
 		}
 	}
-	point = closest;
+	if(!obj)  obj->intesectRay(orig,dir,point,normal);
 }
 
 inline double Raytracer::double distanceToCamera(const Vec &point){
