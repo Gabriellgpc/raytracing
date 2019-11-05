@@ -1,5 +1,9 @@
 #include <utils.h>
 
+
+#ifndef VIEWER_H
+#define VIEWER_H
+
 class Camera{
 public:
   Vec pos, lookat, vup;
@@ -27,3 +31,4 @@ public:
   void setCamera(const Camera &camera);
   void setPespective(float angleP, float znear, float zfar);
 };
+#endif

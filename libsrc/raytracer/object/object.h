@@ -1,5 +1,9 @@
 #include "utils.h"
 
+
+#ifndef OBJECT_H
+#define OBJECT_H
+
 //#############################################################################
 class LightSource{
 public:
@@ -58,3 +62,4 @@ public:
   bool intersectRay(const Vec &orig, const Vec &dir, Vec &point, double &distance);
   void normalAt(const Vec &point, Vec &normal);
 };
+#endif

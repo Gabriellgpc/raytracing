@@ -2,6 +2,9 @@
 #include "world/world.h"
 #include "viewerdata/viewerdata.h"
 
+#ifndef RAYTRACE_H
+#define RAYTRACE_H
+
 //Classe de imagem em float, util para pintar com glDrawPixels no formato RGB com tipo GL_FLOAT
 class ImageRGBf{
 public:
@@ -35,3 +38,4 @@ private:
 	Vec shade(LightSource &source, Vec &incidentRay,Vec &point,Object *obj);   //Aplica a equacao de iluminacao, retorna uma cor
 
 };
+#endif//RAYTRACE_H
