@@ -8,8 +8,10 @@ public:
   std::list<LightSource> lights;
   Vec   bgColor;
   float lightEnv;
+  float ka;
 
-  World();
+
+  World() : bgColor(0.0,0.0,0.0), lightEnv(1.0),ka(0.3;
   World(Vec bgColor, float lightEnv);
   ~World(); //destruir os ponteiros para Object
 };

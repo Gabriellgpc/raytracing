@@ -57,8 +57,7 @@ Vec Raytracer::trace(const Vec &rayStart,const Vec &rayDir, int numReflection){
 	return resultColor;
 
 }
-void
-Raytracer::closestPoint(const Vec &orig,const Vec &dir,Vec &point,Object * obj)
+void Raytracer::closestPoint(const Vec &orig,const Vec &dir,Vec &point,Object * obj)
 {
 	/*itera os objetos, calcula o ponto de inteseccao  e pega o menor deles*/
 
@@ -72,8 +71,40 @@ Raytracer::closestPoint(const Vec &orig,const Vec &dir,Vec &point,Object * obj)
 			if(distTmp < smallerDistance){
 				smallerDistance = distTmp;
 				obj = *it;
-        point = pointTmp;
+				point = pointTmp;
 			}
 		}
 	}
 }
+
+Vec Raytracer::shade(LightSource &source, Vec &incidentRay,Vec &point,Object *obj){	
+	Vec normal;
+	Vec light;
+
+	//calcula a normal
+	obj->normalAt(point,normal);
+
+	light = glm::normalize(source.pos-point);
+
+	//raio refletido
+	Vec R = (2.0f*normal)*normal.dot(source.pos) - source.pos;
+
+	//usa a equacao de iluminacao
+
+	float fatt = 1.0;//
+
+	double cosTheta,/*theta == angulo da normal com raio refletido     */
+		   cosPhi;  /*phi   == angulo da raio refletido com o obsevador*/
+
+	cosTheta = normal.dot(R);
+	cosPhi = R.dot(viewer.camera.);
+
+	double IR = world.lightEnv*world.ka + fatt*source.color[0]*(obj->material.kd * cosTetha + obj->material.ks*pow(cosPhi,obj->material.nshiny));	
+		
+	double IG = world.lightEnv*world.ka + fatt*source.color[1]*(obj->material.kd * cosTetha + obj->material.ks*pow(cosPhi,obj->material.nshiny));	
+	double IB = world.lightEnv*world.ka + fatt*source.color[2]*(obj->material.kd * cosTetha + obj->material.ks*pow(cosPhi,obj->material.nshiny));	
+
+
+	return Vec(IR,IG,IB);
+}
+

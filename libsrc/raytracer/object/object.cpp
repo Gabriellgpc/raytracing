@@ -5,9 +5,9 @@
 
 Material::Material()
 {
-  this->ks = randf();
-  this->kd = 1.0 - randf();
-  this->n_shiny = 2.0*randf() + 1.0;
+  this->ks = 0.35;
+  this->kd = 0.35;
+  this->n_shiny = 1.5;
   this->color = randVec();
 }
 
@@ -47,9 +47,9 @@ bool Sphere::intersectRay(const Vec &orig, const Vec &dir, Vec &point, double &d
 }
 bool Plane::intersectRay(const Vec &orig, const Vec &dir, Vec &point, double &distance)
 {
-  
   return false;
 }
+
 void Sphere::normalAt(const Vec &point, Vec &normal)
 {
   normal =  glm::normalize(point-pos);
