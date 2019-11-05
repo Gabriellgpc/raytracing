@@ -1,6 +1,6 @@
-#include <glm/gtx/intersect.hpp>
-
 #include "object.h"
+
+#include <cmath>
 
 static Material Material::randMaterial()
 {
@@ -20,24 +20,45 @@ Material(const Material &material)
 {
   *this = material;
 }
+bool Sphere::intersectRay(const Vec &orig, const Vec &dir, Vec &point, double &distance)
+{
+  float a, b, c;
+  float delta;
+  float distanceTmp;
+  Vec pIntersec[2];
+  Vec vecAux = orig - pos;
+  //TODO como paralelizar o calculo de a, b e c com openMP ??
+  a = glm::dot(dir, dir);
+  b = 2.0*glm::dot(dir, vecAux);
+  c = glm::dot(vecAux, vecAux);
 
-void Sphere::intersectLine(const Vec &p0, const Vec &p1, Vec &point, Vec &normal)
-{
-  static Vec normal2, point2;
-  return glm::intersectLineSphere(p0, p1, pos, radius, point, normal
-                                  point2, normal2); //WARNING estou retornando apenas a primeira intersecao
-}
-bool Sphere::intersectRay(const Vec &orig, const Vec &dir, double &distance)
-{
-  static Vec normal2, point2;
-  return glm::intersectLineSphere(p0, p1, pos, radius, point, normal
-                                  point2, normal2); //WARNING estou retornando apenas a primeira intersecao
-}
-void Plane::intersectLine(const Vec &p0, const Vec &p1, Vec &point, Vec &normal)
-{
+  delta = b*b - 4.0*a*c;
+  if(delta < 0.0)
+    return false;
 
-}
-bool Plane::intersectRay(const Vec &orig, const Vec &dir, double &distance)
-{
+  pIntersec[0] = (-b + sqrt(delta))/(2.0*a) * dir + orig;
+  pIntersec[1] = (-b - sqrt(delta))/(2.0*a) * dir + orig;
 
+  distance    =  glm::distance(pIntersec[0], orig);
+  point = pIntersec[0];
+
+  distanceTmp =  glm::distance(pIntersec[1], orig);
+  if(distanceTmp < distance)
+  {
+    distance = distanceTmp;
+    point = pIntersec[1];
+  }
+  return true;
+}
+bool Plane::intersectRay(const Vec &orig, const Vec &dir, Vec &point, double &distance)
+{
+  return false;
+}
+void Sphere::normalAt(const Vec &point, Vec &normal)
+{
+  normal =  glm::normalize(point-pos);
+}
+void Plane::normalAt(const Vec &point, Vec &normal)
+{
+  normal = glm::normalize(this->Normal);
 }

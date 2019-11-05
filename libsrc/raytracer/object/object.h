@@ -51,9 +51,9 @@ public:
 
 class Plane:public Object{
 public:
-  Vec normal;
+  Vec Normal;
 
-  Plane(Material material, Vec pos, Vec normal):Object(material, pos), normal(normal){}
+  Plane(Material material, Vec pos, Vec normal):Object(material, pos), Normal(normal){}
   bool intersectRay(const Vec &orig, const Vec &dir, Vec &point, double &distance);
   void normalAt(const Vec &point, Vec &normal);
 };
