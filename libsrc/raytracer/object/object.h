@@ -21,10 +21,8 @@ public:
 
   Material();
   Material(const Material &material);
-  Material(const float &ks,const &float kd,const float &n_shiny,const Vec &color):
+  Material(const float &ks,const float &kd,const float &n_shiny,const Vec &color):
   ks(ks), kd(kd), n_shiny(n_shiny), color(color) {}
-
-  static Material randMaterial();
 };
 //#############################################################################
 
@@ -34,7 +32,8 @@ public:
   Vec pos;
   Material material;
 
-  Object(Material material, Vec pos): material(material), pos(pos) {}
+  Object():pos(0.0,0.0,0.0), material() {}
+  Object(Material mat, Vec pos): material(mat), pos(pos) {}
   virtual bool intersectRay(const Vec &orig, const Vec &dir, Vec &point, double &distance) = 0;
   virtual void normalAt(const Vec &point, Vec &normal) = 0;
 };

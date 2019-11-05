@@ -1,4 +1,4 @@
-#include "utils"
+#include "utils.h"
 #include "world.h"
 #include "viewerdata.h"
 
@@ -27,9 +27,7 @@ public:
   void rayTrace(ImageRGBf &img, int numReflection);
 private:
   //metodos auxiliares
-Vec trace(const Vec &rayStart, Vec &dir, int numReflection);//Traca um raio saindo de um pixel e retorna uma cor
-void closestPoint(const Vec &orig,const Vec &dir,Vec &point,Object *obj);//Calcula ponto de intersecao entre o raio e o objeto mais proximo
+  Vec trace(const Vec &rayStart, Vec &dir, int numReflection);//Traca um raio saindo de um pixel e retorna uma cor
+  void closestPoint(const Vec &orig,const Vec &dir,Vec &point,Object *obj);//Calcula ponto de intersecao entre o raio e o objeto mais proximo
   void shade(LightSource &source, Vec &incidentRay,Vec &point,Object *obj,Vec &color);   //Aplica a equacao de iluminacao, retorna uma cor
-
-  double distanceToCamera(const Vec &point);
 };

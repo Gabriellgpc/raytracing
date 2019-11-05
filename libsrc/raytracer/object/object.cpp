@@ -2,21 +2,16 @@
 
 #include <cmath>
 
-static Material Material::randMaterial()
-{
-  float ks_tmp      = randf();
-  float kd_tmp      = 1.0 - ks;
-  float n_shiny_tmp = randf() + 1.0;
-
-  return Material(ks_tmp, kd_tmp, n_shiny_tmp, randVec());
-}
 
 Material::Material()
 {
-  *this = Material::randMaterial();
+  this->ks = randf();
+  this->kd = 1.0 - randf();
+  this->n_shiny = 2.0*randf() + 1.0;
+  this->color = randVec();
 }
 
-Material(const Material &material)
+Material::Material(const Material &material)
 {
   *this = material;
 }
@@ -29,15 +24,15 @@ bool Sphere::intersectRay(const Vec &orig, const Vec &dir, Vec &point, double &d
   Vec vecAux = orig - pos;
   //TODO como paralelizar o calculo de a, b e c com openMP ??
   a = glm::dot(dir, dir);
-  b = 2.0*glm::dot(dir, vecAux);
+  b = glm::dot(dir, vecAux)*2.0;
   c = glm::dot(vecAux, vecAux);
 
   delta = b*b - 4.0*a*c;
   if(delta < 0.0)
     return false;
 
-  pIntersec[0] = (-b + sqrt(delta))/(2.0*a) * dir + orig;
-  pIntersec[1] = (-b - sqrt(delta))/(2.0*a) * dir + orig;
+  pIntersec[0] =  dir*(float)(-b + sqrt(delta))/(2.0f*a) + orig;
+  pIntersec[1] =  dir*(float)(-b - sqrt(delta))/(2.0f*a) + orig;
 
   distance    =  glm::distance(pIntersec[0], orig);
   point = pIntersec[0];
@@ -52,6 +47,7 @@ bool Sphere::intersectRay(const Vec &orig, const Vec &dir, Vec &point, double &d
 }
 bool Plane::intersectRay(const Vec &orig, const Vec &dir, Vec &point, double &distance)
 {
+  
   return false;
 }
 void Sphere::normalAt(const Vec &point, Vec &normal)

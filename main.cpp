@@ -16,12 +16,12 @@ RayTracer rayTracer;
 
 void display(void)
 {
-  ImageRGBf img;
+  static ImageRGBf img;
   int numRefletion = 2;
 
   raytracer.rayTrace(img, numRefletion);
   glDrawPixels(rayTracer.viewer.win_width , rayTracer.viewer.win_height,
-               GL_RGB, GL_FLOAT, img);
+               GL_RGB, GL_FLOAT, img.data);
   glutSwapBuffers();
 };
 
