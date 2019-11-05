@@ -6,7 +6,7 @@ CPPFLAGS = -Wall -O2 -I ${BASEDIR}/include
 LDFLAGS  = -O2 -L ${BASEDIR}/lib
 LDLIBS   = -lGLU -lGL -lglut -llm	-lutils
 
-all:	raytracer.a
+all:	libraytracer.a
 
 libraytracer.a:	raytracer.o	object/object.o	viewerdata/viewerdata.o	world/world.o
 	ar r $@ $?

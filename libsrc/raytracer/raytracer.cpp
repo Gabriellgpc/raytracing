@@ -1,10 +1,10 @@
-#include "include/raytracer.h"
+#include "raytracer.h"
 
-float &ImageRGBf::operator()(uint i, uint j, uint k){
+float ImageRGBf::operator()(uint i, uint j, uint k){
   uint n = i*width*3 + j*3 + k;
-  if(n >= width)return -1;
+  if(n >= width) return -1;
   return data[n];
-};
+}
 
 void RayTracer::rayTrace(ImageRGBf &img,int numRefletion){
   Vec ray;
@@ -15,7 +15,7 @@ void RayTracer::rayTrace(ImageRGBf &img,int numRefletion){
   {
     for (int y = 0; y < img.height; y++)
     {
-        viewer.pixelDirection2Wolrd(x,y, ray);
+        viewer.pixelToWorld(x,y, ray);
         img.setColor(x, y, trace(viewer.camera.pos, ray, numRefletion));
     }
   }
@@ -24,7 +24,7 @@ void RayTracer::rayTrace(ImageRGBf &img,int numRefletion){
 Vec Raytracer::trace(const Vec &rayStart,const Vec &rayDir, int numReflection){
 	Vec point;
 	Vec resultColor,colorTmp;
-	Vec orig = rayStarting;
+	Vec orig = rayStart;
 	Vec dir = rayDir;
 	double k = 1.0;
 	Object* obj=NULL;
@@ -77,17 +77,18 @@ void Raytracer::closestPoint(const Vec &orig,const Vec &dir,Vec &point,Object * 
 	}
 }
 
-Vec Raytracer::shade(LightSource &source, Vec &incidentRay,Vec &point,Object *obj){	
+Vec Raytracer::shade(LightSource &source, Vec &incidentRay,Vec &point,Object *obj){
 	Vec normal;
 	Vec light;
 
 	//calcula a normal
 	obj->normalAt(point,normal);
 
+	//vetor L
 	light = glm::normalize(source.pos-point);
 
-	//raio refletido
-	Vec R = (2.0f*normal)*normal.dot(source.pos) - source.pos;
+	//raio refletido R
+	Vec reflected = (2.0f*normal)*glm::dot(normal,light) - light;
 
 	//usa a equacao de iluminacao
 
@@ -96,15 +97,12 @@ Vec Raytracer::shade(LightSource &source, Vec &incidentRay,Vec &point,Object *ob
 	double cosTheta,/*theta == angulo da normal com raio refletido     */
 		   cosPhi;  /*phi   == angulo da raio refletido com o obsevador*/
 
-	cosTheta = normal.dot(R);
-	cosPhi = R.dot(viewer.camera.);
+	cosTheta = glm::dot(normal,reflected);
+	cosPhi = glm::dot(reflected,viewer.camera.pos);
 
-	double IR = world.lightEnv*world.ka + fatt*source.color[0]*(obj->material.kd * cosTetha + obj->material.ks*pow(cosPhi,obj->material.nshiny));	
-		
-	double IG = world.lightEnv*world.ka + fatt*source.color[1]*(obj->material.kd * cosTetha + obj->material.ks*pow(cosPhi,obj->material.nshiny));	
-	double IB = world.lightEnv*world.ka + fatt*source.color[2]*(obj->material.kd * cosTetha + obj->material.ks*pow(cosPhi,obj->material.nshiny));	
-
+	double IR = world.lightEnv*world.ka + fatt*source.color[0]*(obj->material.kd * cosTetha + obj->material.ks*pow(cosPhi,obj->material.nshiny));
+	double IG = world.lightEnv*world.ka + fatt*source.color[1]*(obj->material.kd * cosTetha + obj->material.ks*pow(cosPhi,obj->material.nshiny));
+	double IB = world.lightEnv*world.ka + fatt*source.color[2]*(obj->material.kd * cosTetha + obj->material.ks*pow(cosPhi,obj->material.nshiny));
 
 	return Vec(IR,IG,IB);
 }
-
