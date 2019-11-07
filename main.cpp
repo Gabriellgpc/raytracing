@@ -1,33 +1,33 @@
 #include <iostream>
 #include <stdlib.h>     /* atoi */
-
+#include <stdio.h>
 #include <GL/glut.h>
-#include <GL/glu.h>
-#include <GL/gl.h>
-
-#include "raytracer.h"
+#include <raytrace.h>
 
 
 #define NUM_LIGHT_SRC 2
 #define NUM_SPHERES   5
 #define NUM_PLANES    3
 
-RayTracer rayTracer;
+#define WIDTH 1280
+#define HEIGHT 640
+
+RayTracer raytracer;
+ImageRGBf img(WIDTH,HEIGHT);
 
 void display(void)
 {
-  static ImageRGBf img;
-  int numRefletion = 2;
-
+  int numRefletion = 1;
   raytracer.rayTrace(img, numRefletion);
-  glDrawPixels(rayTracer.viewer.win_width , rayTracer.viewer.win_height,
+
+  glDrawPixels(WIDTH ,HEIGHT,
                GL_RGB, GL_FLOAT, img.data);
   glutSwapBuffers();
 };
 
 void reshape (int w, int h)
 {
-  rayTracer.viewer.setWindowSize(w, h); //atualiza dimensoes da tela
+  raytracer.viewer.setWindowSize(w, h); //atualiza dimensoes da tela
 };
 
 //inicializa o universo
@@ -49,19 +49,31 @@ void init(int win_width, int win_height)
   glClear(GL_COLOR_BUFFER_BIT);
 
   //Configurando a matriz de projecao
-  rayTracer.viewer.setWindowSize(win_width, win_height); //atualiza dimensoes da tela
+  raytracer.viewer.setWindowSize(win_width, win_height); //atualiza dimensoes da tela
 
   //Configurando luz ambiente e background
-  rayTracer.world.bgColor = Vec(0.0, 0.0, 0.0);
-  rayTracer.world.lightEnv= 0.2;
+  raytracer.world.bgColor = Vec(0.0, 0.0, 0.5);
+  raytracer.world.lightEnv= 0.5;
 
+  raytracer.world.objs.push_back(new Sphere(Material(), Vec(-3.0,0.0,-2.0), 3.0)) ;
+  raytracer.world.objs.push_back(new Sphere(Material(), Vec(3.0,0.0,-2.0), 1.0)) ;
+  // raytracer.world.objs.push_back(new Plane(Material(), Vec(10.0,10.0,0.0),  Vec(0.0,1.0,1.0))) ;
+  //raytracer.world.objs.push_back(new Plane(Material(), Vec(0.0,-1.0,0.0),  Vec(0.0,1.0,0.0))) ;
+  // raytracer.world.objs.push_back(new Plane(Material(), Vec(0.0,0.0,0.0),  Vec(1.0,0.0,0.0))) ;
+  //coordenada 1 aumentando vai para esquerda da tela
+  //coordenada 2 aumentando vai para baixo da tela
+  //coordenada 1 aumentando vai para esquerda da tela
+
+  //raytracer.world.lights.push_back( LightSource(Vec(0.0,-3.0,3.0), Vec(0.2,0.2,0.8)) );
+  raytracer.world.lights.push_back( LightSource(Vec(10.0,10.0,0.0), Vec(0.5,0.5,0.0)) );
   //Criando e posicionando objetos e pontos de luz no mundo
+  /*
   for(int i = 0; i < NUM_SPHERES; i++)
   {
     color    = randVec();
     pos      = randPositionInCube(VertexA, VertexB);
     material = Material::randMaterial();
-    rayTracer.world.objs.push_back(new Sphere(pos, Material::randMaterial(), randf(R_MAX)));
+    raytracer.world.objs.push_back(new Sphere(pos, Material::randMaterial(), randf(R_MAX)));
   }
 
   for(int i = 0; i < NUM_PLANES; i++)
@@ -69,32 +81,27 @@ void init(int win_width, int win_height)
     color    = randVec();
     pos      = randPositionInCube(VertexA, VertexB);
     material = Material::randMaterial();
-    rayTracer.world.objs.push_back(new Plane(pos, Material::randMaterial(), randVec().normalize() ));
+    raytracer.world.objs.push_back(new Plane(pos, Material::randMaterial(), randVec().normalize() ));
   }
 
   for(int i = 0; i < NUM_LIGHT_SRC; i++)
   {
     color    = Vec(1.0, 1.0, 1.0);
     pos      = randPositionInCube(VertexA, VertexB);
-    rayTracer.world.lights.push_back( LightSource(pos, color) );
+    raytracer.world.lights.push_back( LightSource(pos, color) );
   }
+  */
 
 };
 
 int main(int argc, char **argv){
-  if(argc != 3){
-    std::cerr << "Entrada Esperada: ./main width height\n";
-    return -1;
-  }
-  int width ( atoi(argv[1]) );
-  int height( atoi(argv[2]) );
 
   glutInit(&argc, argv);
   glutInitDisplayMode (GLUT_DOUBLE | GLUT_RGB);
-  glutInitWindowSize (width, height);
-  glutInitWindowPosition (100, 100);
+  glutInitWindowSize (WIDTH, HEIGHT);
+  glutInitWindowPosition (0, 0);
   glutCreateWindow ("Ray Tracing Project - UFRN - GC");
-  init(width, height);
+  init(WIDTH, HEIGHT);
 
   glutDisplayFunc(display);
   glutReshapeFunc(reshape);
