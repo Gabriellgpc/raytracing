@@ -9,10 +9,22 @@ Material::Material()
   this->color = randVec();
 }
 
+Material::Material(const Vec&color)
+{
+  this->color = color;
+}
+
 Material::Material(const Material &material)
 {
   *this = material;
 }
+
+void Material::setKs(float ks, float ka)
+{
+  this->ks = ks;
+  this->kd = (1.0 - ka) - ks;
+}
+
 bool Sphere::intersectRay(const Vec &orig, const Vec &dir, Vec &point, double &distance)
 {
   float a, b, c;

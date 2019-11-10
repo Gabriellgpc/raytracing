@@ -23,11 +23,11 @@ public:
   Vec   color;
 
   Material();
+  Material(const Vec&color);
   Material(const Material &material);
   Material(const float &ks,const float &kd,const float &n_shiny,const Vec &color):
   ks(ks), kd(kd), n_shiny(n_shiny), color(color) {}
-  void setKs(float ks);
-  void setKd(float kd);
+  void setKs(float ks, float ka);
 };
 //#############################################################################
 
@@ -57,7 +57,7 @@ class Plane:public Object{
 public:
   Vec Normal;
 
-  Plane(Material material, Vec pos, Vec normal):Object(material, pos), Normal(normal){}
+  Plane(Material material, Vec pos, Vec normal):Object(material, pos), Normal(glm::normalize(normal)){}
   bool intersectRay(const Vec &orig, const Vec &dir, Vec &point, double &distance);
   void normalAt(const Vec &point, Vec &normal);
 };

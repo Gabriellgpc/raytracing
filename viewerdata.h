@@ -29,5 +29,7 @@ public:
   void setWindowSize(int win_width, int win_height);
   void setCamera(const Camera &camera);
   void setPespective(float angleP, float znear, float zfar);
+  void setLookAt(const Vec &at);
+  void moveCamera(Vec newPosCam);
 };
 #endif

@@ -2,13 +2,21 @@ BASEDIR	=	.
 
 CC = g++
 CXX = g++
-CPPFLAGS = -Wall -O2 -I .
+CPPFLAGS = -Wall -O2 -I . -fopenmp
 LDFLAGS = -L ${BASEDIR}/lib
-LDLIBS = -lGLU -lGL -lglut -lm	-fopenmp#-lutils -lraytrace
+LDLIBS = -lGLU -lGL -lglut -lm	#-lutils -lraytrace
+
+OBJS = raytrace.o    utils.o	viewerdata.o	world.o   object.o
 
 all:	main
 
-main:	main.cpp    raytrace.cpp    utils.cpp	viewerdata.cpp	world.cpp   object.cpp	raytrace.h  utils.h viewerdata.h	world.h   object.h
+main:	main.cpp	${OBJS}
+
+raytrace.o:	raytrace.cpp raytrace.h
+viewerdata.o:	viewerdata.cpp viewerdata.h
+object.o:	object.cpp object.h
+world.o:	world.cpp world.h
+utils.o:	utils.cpp utils.h
 
 install:
 	${MAKE}	clean
@@ -17,6 +25,7 @@ install:
 
 clean:
 	rm -rf main
+	rm -f *.o
 
 realclean:
 	${MAKE}	clean

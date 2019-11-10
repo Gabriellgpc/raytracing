@@ -10,7 +10,7 @@
 class ImageRGBf{
 public:
   float *data;
-  uint width, height;
+  int width, height;
 
 public:
   ImageRGBf();
@@ -31,13 +31,10 @@ public:
 	//Metodo de renderizacao
 	//WARNING: levar em conta objetos fora do frustum ??
 	void rayTrace(ImageRGBf &img, int numReflection);
-private:
+public:
 	//metodos auxiliares
-
-	Vec trace(const Vec &rayStart,const Vec &rayDir, int numReflection);//Traca um raio saindo de um pixel e retorna uma cor
-
+  Vec trace(const Vec &rayStart,const Vec &rayDir, int numReflection);//Traca um raio saindo de um pixel e retorna uma cor
 	bool closestPoint(const Vec &orig,const Vec &dir,Vec &point,Object **obj);//Calcula ponto de intersecao entre o raio e o objeto mais proximo
-
 	Vec shade(LightSource &source,Vec &point,Object *obj,Vec &R);   //Aplica a equacao de iluminacao, retorna uma cor
 
 };

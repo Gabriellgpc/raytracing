@@ -4,13 +4,8 @@
 #include <GL/glut.h>
 #include <raytrace.h>
 
-
-#define NUM_LIGHT_SRC 2
-#define NUM_SPHERES   5
-#define NUM_PLANES    3
-
-#define WIDTH 1280
-#define HEIGHT 640
+#define WIDTH 640
+#define HEIGHT 480
 
 RayTracer raytracer;
 ImageRGBf img(WIDTH,HEIGHT);
@@ -18,16 +13,12 @@ ImageRGBf img(WIDTH,HEIGHT);
 void display(void)
 {
   int numRefletion = 1;
+
   raytracer.rayTrace(img, numRefletion);
 
   glDrawPixels(WIDTH ,HEIGHT,
                GL_RGB, GL_FLOAT, img.data);
   glutSwapBuffers();
-};
-
-void reshape (int w, int h)
-{
-  raytracer.viewer.setWindowSize(w, h); //atualiza dimensoes da tela
 };
 
 //inicializa o universo
@@ -38,7 +29,7 @@ void reshape (int w, int h)
 * znear(default = 0.01), zfar (default = 10000.0)
 * Camera: from(0.0 ,0.0, -0.5), lookAt(0.0, 0.0, 0.0), vUp(0.0, 1.0, 0.0)
 * angulo de abertura do pespective (default = 60.0)
-* dimensoes da tela: 640x480 ;
+* dimensoes da tela: 640x480;
 * posicionamento e orientacao da Camera;
 */
 //Cria e posiciona os Objetos
@@ -52,47 +43,81 @@ void init(int win_width, int win_height)
   raytracer.viewer.setWindowSize(win_width, win_height); //atualiza dimensoes da tela
 
   //Configurando luz ambiente e background
-  raytracer.world.bgColor = Vec(0.0, 0.0, 0.5);
-  raytracer.world.lightEnv= 0.5;
+  raytracer.world.bgColor = Vec(0.0, 0.0, 0.0);
+  raytracer.world.lightEnv= 0.6;
+  raytracer.world.ka = 0.4;
 
-  raytracer.world.objs.push_back(new Sphere(Material(), Vec(-3.0,0.0,-2.0), 3.0)) ;
-  raytracer.world.objs.push_back(new Sphere(Material(), Vec(3.0,0.0,-2.0), 1.0)) ;
-  // raytracer.world.objs.push_back(new Plane(Material(), Vec(10.0,10.0,0.0),  Vec(0.0,1.0,1.0))) ;
-  //raytracer.world.objs.push_back(new Plane(Material(), Vec(0.0,-1.0,0.0),  Vec(0.0,1.0,0.0))) ;
-  // raytracer.world.objs.push_back(new Plane(Material(), Vec(0.0,0.0,0.0),  Vec(1.0,0.0,0.0))) ;
-  //coordenada 1 aumentando vai para esquerda da tela
-  //coordenada 2 aumentando vai para baixo da tela
-  //coordenada 1 aumentando vai para esquerda da tela
+  // raytracer.world.objs.push_back(new Plane(Material(), Vec(0.0,0.0,10.0) , Vec(0.0, 0.0, -1.0)));
+  Material material;
+  material.color = Vec(1.0, 0.0, 0.0);
+  material.setKs(0.2, 0.4);
+  raytracer.world.objs.push_back(new Sphere(material, Vec(0.0,0.0,0.0) , 1.0));
 
-  //raytracer.world.lights.push_back( LightSource(Vec(0.0,-3.0,3.0), Vec(0.2,0.2,0.8)) );
-  raytracer.world.lights.push_back( LightSource(Vec(10.0,10.0,0.0), Vec(0.5,0.5,0.0)) );
-  //Criando e posicionando objetos e pontos de luz no mundo
-  /*
-  for(int i = 0; i < NUM_SPHERES; i++)
-  {
-    color    = randVec();
-    pos      = randPositionInCube(VertexA, VertexB);
-    material = Material::randMaterial();
-    raytracer.world.objs.push_back(new Sphere(pos, Material::randMaterial(), randf(R_MAX)));
-  }
+  material.color = Vec(0.0, 1.0, 0.0);
+  material.setKs(0.3, 0.4);
+  raytracer.world.objs.push_back(new Sphere(material, Vec(2.0,0.0,0.0) , 1.0));
 
-  for(int i = 0; i < NUM_PLANES; i++)
-  {
-    color    = randVec();
-    pos      = randPositionInCube(VertexA, VertexB);
-    material = Material::randMaterial();
-    raytracer.world.objs.push_back(new Plane(pos, Material::randMaterial(), randVec().normalize() ));
-  }
+  material.color = Vec(0.0, 0.0, 1.0);
+  material.setKs(0.4, 0.4);
+  raytracer.world.objs.push_back(new Sphere(material, Vec(0.0, 2.0,0.0), 1.0));
 
-  for(int i = 0; i < NUM_LIGHT_SRC; i++)
-  {
-    color    = Vec(1.0, 1.0, 1.0);
-    pos      = randPositionInCube(VertexA, VertexB);
-    raytracer.world.lights.push_back( LightSource(pos, color) );
-  }
-  */
+  material.color = Vec(1.0, 0.0, 1.0);
+  material.setKs(0.6, 0.4);
+  raytracer.world.objs.push_back(new Sphere(material, Vec(0.0, 0.0,2.0), 1.0));
+  // raytracer.world.objs.push_back(new Sphere(Material(), Vec(0.0,-2.0,0.0) , 1.0));
 
+  // raytracer.world.lights.push_back( LightSource(Vec(0.0,0.0,0.0), Vec(1.0,0.0,0.0)) );
+  raytracer.world.lights.push_back( LightSource(Vec(0.0,10.0,-10.0), Vec(0.7,0.7,0.7)) );
 };
+
+void mouse(int button, int state, int x, int y)
+{
+  static Vec lookAt;
+
+  if (state == GLUT_DOWN)
+  {
+    raytracer.viewer.pixelToWorld(x, y, lookAt);
+    raytracer.viewer.setLookAt(lookAt);
+    display();
+  }
+}
+
+void keyboard (unsigned char key, int x, int y){
+  static Vec posCam(0.0, 0.0, -5.0);
+
+  switch (key) {
+  case 'a':
+    posCam.x++;
+    raytracer.viewer.moveCamera(posCam);
+    break;
+  case 's':
+   posCam.z--;
+   raytracer.viewer.moveCamera(posCam);
+    break;
+  case 'd':
+   posCam.x--;
+   raytracer.viewer.moveCamera(posCam);
+    break;
+  case 'w':
+   posCam.z++;
+   raytracer.viewer.moveCamera(posCam);
+    break;
+  case 'o':
+   posCam.y++;
+   raytracer.viewer.moveCamera(posCam);
+    break;
+  case 'l':
+   posCam.y--;
+   raytracer.viewer.moveCamera(posCam);
+    break;
+  case 27:
+    exit(0);
+    break;
+  default:
+    break;
+  }
+  display();
+}
 
 int main(int argc, char **argv){
 
@@ -104,7 +129,11 @@ int main(int argc, char **argv){
   init(WIDTH, HEIGHT);
 
   glutDisplayFunc(display);
-  glutReshapeFunc(reshape);
+  // glutReshapeFunc(reshape);
+
+  glutMouseFunc(mouse);
+  glutKeyboardFunc(keyboard);
+
   glutMainLoop();
   return 0;
 }
