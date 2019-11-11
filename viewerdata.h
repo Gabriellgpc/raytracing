@@ -24,7 +24,8 @@ private:
 public:
   ViewerData(); //default
 
-  void pixelToWorld(const int wx, const int wy, Vec &posWorld);
+  // void pixelToWorld(const int wx, const int wy, Vec &posWorld);
+  Vec pixelToWorld(const int wx, const int wy);
 
   void setWindowSize(int win_width, int win_height);
   void setCamera(const Camera &camera);

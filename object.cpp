@@ -49,14 +49,15 @@ bool Sphere::intersectRay(const Vec &orig, const Vec &dir, Vec &point, double &d
   point = pIntersec[0];
   distanceTmp =  glm::distance(pIntersec[1], orig);
 
-  distanceTmp = (distanceTmp < 0.0)?-distanceTmp:distanceTmp; //abs
-  distance = (distance < 0.0)?-distance:distance; //abs
-
   if(distanceTmp < distance)
   {
     point = pIntersec[1];
   }
-  return true;
+
+  // glm::dot(point-orig, dir)
+  //para intesecao apenas para o que apos orig
+  // (para evitar problema de falsa intersecao com objetos que estao antes de orig)
+  return glm::dot(point-orig, dir) > 0.0;
 }
 bool Plane::intersectRay(const Vec &orig, const Vec &dir, Vec &point, double &distance)
 {
