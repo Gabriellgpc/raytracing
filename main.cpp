@@ -15,7 +15,7 @@ float angZ = 0.0;
 #define WIDTH 640
 #define HEIGHT 480
 
-const int numReflection = 1;
+int numReflection = 1;
 
 RayTracer raytracer;
 ImageRGBf img(WIDTH,HEIGHT);
@@ -84,7 +84,7 @@ void init(int win_width, int win_height)
   material.n_shiny = 50.0;
   material.color = Vec(0.0, 0.0, 1.0);
   material.setKs(0.7, raytracer.world.ka);
-  raytracer.world.objs.push_back(new Sphere(material, Vec(3.0,-1.0,0.0)*1.414213562f, 0.25));
+  raytracer.world.objs.push_back(new Sphere(material, Vec(0.6,-1.0,0.0)*1.414213562f, 0.25));
 
   material.n_shiny = 10.0;
   material.color = Vec(1.0, 1.0, 1.0);
@@ -92,9 +92,10 @@ void init(int win_width, int win_height)
   raytracer.world.objs.push_back(new Sphere(material, Vec(-1.0,-1.0,0.0)*1.414213562f, 1.0));
   // raytracer.world.objs.push_back(new Sphere(Material(), Vec(0.0,-2.0,0.0) , 1.0));
 
+  raytracer.world.lights.push_back( LightSource(Vec(15.0,0.0,0.0), Vec(1.0,1.0,1.0)) );
+  // raytracer.world.lights.push_back( LightSource(Vec(0.0,15.0,0.0), Vec(1.0,1.0,1.0)) );
   // raytracer.world.lights.push_back( LightSource(Vec(0.0,0.0,0), Vec(1.0,1.0,1.0)) );
   // raytracer.world.lights.push_back( LightSource(Vec(0.0,0.0,-10), Vec(1.0,1.0,1.0)) );
-  raytracer.world.lights.push_back( LightSource(Vec(15.0,0.0,0.0), Vec(1.0,1.0,1.0)) );
   // raytracer.world.lights.push_back( LightSource(Vec(-20.0,0.0,0.0), Vec(1.0,1.0,1.0)) );
   // raytracer.world.lights.push_back( LightSource(Vec(0.0,10,0.0), Vec(1.0,1.0,1.0)) );
   // raytracer.world.lights.push_back( LightSource(Vec(0.0,-25,0.0), Vec(1.0,1.0,1.0)) );
@@ -135,7 +136,7 @@ void keyboard (unsigned char key, int x, int y){
     model = glm::rotate(model, -STEP_R, axisX);
     break;
   case 'Y':
-    model = glm::rotate(model, -STEP_R, axisX);
+    model = glm::rotate(model, -STEP_R, axisY);
     break;
   case 'Z':
     model = glm::rotate(model, -STEP_R, axisZ);
@@ -162,6 +163,10 @@ void keyboard (unsigned char key, int x, int y){
 
 int main(int argc, char **argv)
 {
+  if(argc == 2)
+  {
+    numReflection = atoi(argv[1]);
+  }
   glutInit(&argc, argv);
   glutInitDisplayMode (GLUT_DOUBLE | GLUT_RGB);
   glutInitWindowSize (WIDTH, HEIGHT);

@@ -103,6 +103,7 @@ Vec RayTracer::trace(const Vec &rayStart,const Vec &rayDir, int numReflection)
 	Vec dir = rayDir;
 	float k;
 	Object* obj=NULL;
+  // bool noLight = true;
 
   numReflection--;
   //Caso base 1
@@ -112,7 +113,9 @@ Vec RayTracer::trace(const Vec &rayStart,const Vec &rayDir, int numReflection)
 
 	for(auto &lsource : world.lights)
   {
-		resultColor += shade(lsource,point,obj,dir);
+		resultColor += shade(lsource,rayStart,point, obj, dir);
+    // if(resultColor != Vec(0.0))
+    //   noLight = true;
 	}
   // resultColor += world.getVeclightEnv()*obj->material.color;
   //caso base 2
@@ -123,12 +126,15 @@ Vec RayTracer::trace(const Vec &rayStart,const Vec &rayDir, int numReflection)
   Vec N;
   obj->normalAt(point, N);
   if(glm::dot(N, dir) < 0)
+  {
+    // puts("Cai no caso!");
     return resultColor;
+  }
 
-  Vec colorRef = trace(point, dir, numReflection);
-  resultColor  = (resultColor + colorRef)/2.0f;
-  if(colorRef == Vec(0.0))resultColor*=2.0f;
-  return resultColor;
+  // Vec colorRef = trace(point, dir, numReflection);
+  // resultColor  = (resultColor + colorRef)/2.0f;
+  // if(colorRef == Vec(0.0))resultColor*=2.0f;
+  return 0.8f*resultColor + 0.1f*trace(point, dir, numReflection);
 }
 
 bool RayTracer::closestPoint(const Vec &orig,const Vec &dir,Vec &point,Object **obj)
@@ -151,7 +157,7 @@ bool RayTracer::closestPoint(const Vec &orig,const Vec &dir,Vec &point,Object **
   return test;
 }
 
-Vec RayTracer::shade(LightSource &source,Vec &point,Object *obj,Vec &R){
+Vec RayTracer::shade(LightSource &source,const Vec &observer,Vec &point,Object *obj,Vec &R){
 	Vec N;
 	Vec L;
   Vec V;
@@ -170,7 +176,7 @@ Vec RayTracer::shade(LightSource &source,Vec &point,Object *obj,Vec &R){
     }
 
   //Observador
-  V = glm::normalize(viewer.camera.pos - point);
+  V = glm::normalize(observer - point);
 	//calcula a normal
 	obj->normalAt(point,N);
 	//raio refletido R

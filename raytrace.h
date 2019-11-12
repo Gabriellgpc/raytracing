@@ -36,6 +36,6 @@ private:
 	//metodos auxiliares
   Vec trace(const Vec &rayStart,const Vec &rayDir, int numReflection);//Traca um raio saindo de um pixel e retorna uma cor
 	bool closestPoint(const Vec &orig,const Vec &dir,Vec &point,Object **obj);//Calcula ponto de intersecao entre o raio e o objeto mais proximo
-	Vec shade(LightSource &source,Vec &point,Object *obj,Vec &R);   //Aplica a equacao de iluminacao, retorna uma cor
+	Vec shade(LightSource &source,const Vec &observer,Vec &point,Object *obj,Vec &R);   //Aplica a equacao de iluminacao, retorna uma cor
 };
 #endif//RAYTRACE_H
