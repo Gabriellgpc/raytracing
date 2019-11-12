@@ -4,7 +4,7 @@
 #include <string.h>
 #include <omp.h>
 
-// #define PARALLEL
+#define PARALLEL
 
 //height - i - 1 => isso com que o a coordenada na imagem (0,0) seja no canto inferior esquerdo
 //isso eh necessario pois eh a referencia do opengl
@@ -78,14 +78,14 @@ void RayTracer::rayTrace(ImageRGBf &img, int numReflection){
   }
 
   #pragma omp parallel for schedule(runtime) default(none) \
-          shared(img, rayList) firstprivate(numRefletion) collapse (2)
+          shared(img, rayList) firstprivate(numReflection) collapse (2)
   for(int lin = 0; lin < img.height; lin++)
   {
     for (int col = 0; col < img.width; col++)
     {
-      (void)numRefletion;
+      (void)numReflection;
       {
-        Vec color = trace(viewer.camera.pos, rayList[lin*img.width + col], numRefletion);
+        Vec color = trace(viewer.camera.pos, rayList[lin*img.width + col], numReflection);
         img.setColor(lin, col, color);
       }
     }
@@ -123,18 +123,18 @@ Vec RayTracer::trace(const Vec &rayStart,const Vec &rayDir, int numReflection)
   if(numReflection == 0)
     return resultColor;
 
-  Vec N;
-  obj->normalAt(point, N);
-  if(glm::dot(N, dir) < 0)
-  {
-    // puts("Cai no caso!");
-    return resultColor;
-  }
+  // Vec N;
+  // obj->normalAt(point, N);
+  // if(glm::dot(N, dir) < 0)
+  // {
+  //   // puts("Cai no caso!");
+  //   return resultColor;
+  // }
 
   // Vec colorRef = trace(point, dir, numReflection);
   // resultColor  = (resultColor + colorRef)/2.0f;
   // if(colorRef == Vec(0.0))resultColor*=2.0f;
-  return 0.8f*resultColor + 0.1f*trace(point, dir, numReflection);
+  return 0.8f*resultColor + 0.2f*trace(point, dir, numReflection);
 }
 
 bool RayTracer::closestPoint(const Vec &orig,const Vec &dir,Vec &point,Object **obj)
