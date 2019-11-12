@@ -114,8 +114,15 @@ Vec RayTracer::trace(const Vec &rayStart,const Vec &rayDir, int numReflection)
   {
 		resultColor += shade(lsource,point,obj,dir);
 	}
+  // resultColor += world.getVeclightEnv()*obj->material.color;
   //caso base 2
+
   if(numReflection == 0)
+    return resultColor;
+
+  Vec N;
+  obj->normalAt(point, N);
+  if(glm::dot(N, dir) < 0)
     return resultColor;
 
   Vec colorRef = trace(point, dir, numReflection);
@@ -183,7 +190,7 @@ Vec RayTracer::shade(LightSource &source,Vec &point,Object *obj,Vec &R){
 
   for(int ch = 0; ch < 3; ch++)
   {
-    color[ch] = world.lightEnv*world.ka*obj->material.color[ch]/(float)world.lights.size()+
+    color[ch] = world.lightEnv*world.ka*obj->material.color[ch] +
                 fatt*source.color[ch]*(obj->material.kd*obj->material.color[ch]* cosTetha +
                                        obj->material.ks*pow(cosPhi,obj->material.n_shiny));
   }
