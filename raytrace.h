@@ -40,7 +40,7 @@ private:
                     /*out*/Object **obj)const;//Calcula ponto de intersecao entre o raio e o objeto mais proximo
 	Vec shade(/*in*/const Ray ray,
             /*in*/const LightSource &source,
-            /*in*/const Vec &point, //ponto sobre a superficie do objeto
+            /*in*/const Vec point, //ponto sobre a superficie do objeto
             /*in*/const Object *obj,
             /*out*/Ray  &ray_reflected,
             /*out*/bool &reflection)const;   //Aplica a equacao de iluminacao, retorna uma cor

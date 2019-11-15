@@ -121,7 +121,7 @@ void mouse(int button, int state, int x, int y)
 
 void keyboard (unsigned char key, int x, int y){
 
-#define MOVE_LIGHT
+// #define MOVE_LIGHT
 
 #define STEP_R 0.1f //5 graus
 #define STEP_D 2.0f

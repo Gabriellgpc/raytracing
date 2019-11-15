@@ -119,8 +119,8 @@ RayTracer::trace(const Ray ray, int num_reflection)const
                           reflection);
     if((obj->material.kr != 0.0) && reflection && (num_reflection != 0))
     {
-      result_color *= 0.5;
-      result_color += obj->material.kr*trace(ray_reflected, num_reflection--);
+      result_color *= 0.5f;
+      result_color += 0.5f*trace(ray_reflected, num_reflection--);
     }
 	}
 
@@ -154,7 +154,7 @@ RayTracer::closestPoint(/*in*/const Ray ray,
 Vec
 RayTracer::shade(/*in*/const Ray ray,
                  /*in*/const LightSource &source,
-                 /*in*/const Vec &point, //ponto sobre a superficie do objeto
+                 /*in*/const Vec point, //ponto sobre a superficie do objeto
                  /*in*/const Object *obj,
                  /*out*/Ray &ray_reflected,
                  /*out*/bool& reflection)const
@@ -179,7 +179,7 @@ RayTracer::shade(/*in*/const Ray ray,
 	//calcula a normal
 	obj->normalAt(point, N);
 	//raio refletido R
-	R = (2.0f*N)*glm::dot(N,L) - L;
+	R = glm::normalize((2.0f*N)*glm::dot(N,L) - L);
 
   //Equacao de iluminacao
   float fatt = 1.0;
@@ -187,9 +187,6 @@ RayTracer::shade(/*in*/const Ray ray,
 
   cosTetha = glm::dot(N,L);
 	cosPhi   = glm::dot(R,V);
-
-  // cosTetha = (cosTetha < 0.0)?0.0:cosTetha;
-  // cosPhi = (cosPhi < 0.0)?0.0:cosPhi;
 
   for(int ch = 0; ch < 3; ch++)
   {
