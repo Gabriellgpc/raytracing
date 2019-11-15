@@ -34,7 +34,7 @@ Sphere::intersectRay(const Ray &ray, Vec &point, double &distance)const
   Vec vecAux = ray.orig - pos;
 
   b = glm::dot(ray.dir, vecAux)*2.0;
-  if(b > 0.0) //esfera "atras do observador"
+  if(b > 0.0 || b == 0.0) //esfera "atras do observador" ou observador dentro da esfera
     return false;
   c = glm::dot(vecAux, vecAux) - (this->radius*this->radius);
 
@@ -45,13 +45,16 @@ Sphere::intersectRay(const Ray &ray, Vec &point, double &distance)const
   {
     t[0] = (float)(-b + sqrt(delta))/(2.0f);
     t[1] = (float)(-b - sqrt(delta))/(2.0f);
+
     if(t[0] < t[1])
       distance = t[0];
     else
       distance = t[1];
+
   }else{
     distance = -b/(2.0f);
   }
+
   point = ray.orig + ray.dir*(float)distance;
 
   return true;

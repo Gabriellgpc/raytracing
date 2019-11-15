@@ -58,8 +58,8 @@ void init(int win_width, int win_height)
 
   //Configurando luz ambiente e background
   raytracer.world.bgColor = Vec(0.8, 0.8, 0.8);
-  raytracer.world.lightEnv= 0.3;
-  raytracer.world.ka = 0.1;
+  raytracer.world.lightEnv= 0.5;
+  raytracer.world.ka = 0.5;
 
 
   // material.n_shiny = 50.0;
@@ -73,7 +73,7 @@ void init(int win_width, int win_height)
   // raytracer.world.objs.push_back(new Plane(Material(), Vec(0.0,20.0,0.0) , Vec(0.0, -1.0, 0.0)));
 
   material.n_shiny = 50.0;
-  material.color = Vec(1.0, 1.0, 1.0);
+  material.color = Vec(1.0, 0.0, 0.0);
   material.setKs(0.4, raytracer.world.ka);
   raytracer.world.objs.push_back(new Sphere(material, Vec(1.0,0.0,0.0) , 1.0));
 
@@ -93,12 +93,15 @@ void init(int win_width, int win_height)
   raytracer.world.objs.push_back(new Sphere(material, Vec(0.6,-1.0,0.0)*1.414213562f, 0.25));
 
   material.n_shiny = 10.0;
+  material.kr = 0.0;
   material.color = Vec(1.0, 1.0, 1.0);
   material.setKs(0.1, raytracer.world.ka);
   raytracer.world.objs.push_back(new Sphere(material, Vec(-1.0,-1.0,0.0)*1.414213562f, 1.0));
   // raytracer.world.objs.push_back(new Sphere(Material(), Vec(0.0,-2.0,0.0) , 1.0));
 
   raytracer.world.lights.push_back( LightSource(Vec(10.0,0.0,-10.0), Vec(1.0,1.0,1.0)) );
+  // raytracer.world.lights.push_back( LightSource(Vec(10.0,0.0,-10.0), Vec(1.0,1.0,1.0)) );
+  // raytracer.world.lights.push_back( LightSource(Vec(10.0,0.0,-10.0), Vec(1.0,1.0,1.0)) );
   // raytracer.world.lights.push_back( LightSource(Vec(0.0,-10.0,0.0), Vec(1.0,1.0,1.0)) );
   // raytracer.world.lights.push_back( LightSource(Vec(0.0,0.0,0), Vec(1.0,1.0,1.0)) );
   // raytracer.world.lights.push_back( LightSource(Vec(0.0,0.0,-10), Vec(1.0,1.0,1.0)) );

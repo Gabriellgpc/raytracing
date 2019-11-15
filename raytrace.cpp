@@ -120,7 +120,7 @@ RayTracer::trace(const Ray ray, int num_reflection)const
     if((obj->material.kr != 0.0) && reflection && (num_reflection != 0))
     {
       result_color *= 0.5f;
-      result_color += 0.5f*trace(ray_reflected, num_reflection--);
+      result_color += obj->material.kr*trace(ray_reflected, num_reflection--);
     }
 	}
 
@@ -168,12 +168,6 @@ RayTracer::shade(/*in*/const Ray ray,
   //vetor L
   L = glm::normalize(source.pos - point);
 
-  //testes para considerar objetos entre o ponto e a fonte de luz
-  //efeito de sombra
-  Ray rayL(point, L);
-  if(closestPoint(rayL, tmpP, &objTmp))
-      return Vec(0,0,0);
-
   //Observador
   V = -ray.dir;
 	//calcula a normal
@@ -188,6 +182,22 @@ RayTracer::shade(/*in*/const Ray ray,
   cosTetha = glm::dot(N,L);
 	cosPhi   = glm::dot(R,V);
 
+
+
+  if(cosTetha < 0.0)
+  {
+    // ray_reflected = Ray(point, N);
+    return world.getVeclightEnv()*obj->material.color;
+  }
+
+  reflection = true;
+  ray_reflected = Ray(point, R);
+  //testes para considerar objetos entre o ponto e a fonte de luz
+  //efeito de sombra
+  Ray rayL(point, L);
+  if(closestPoint(rayL, tmpP, &objTmp))
+      return world.getVeclightEnv()*obj->material.color;
+
   for(int ch = 0; ch < 3; ch++)
   {
     color[ch] = world.lightEnv*world.ka*obj->material.color[ch] +
@@ -195,7 +205,6 @@ RayTracer::shade(/*in*/const Ray ray,
                                        obj->material.ks*pow(cosPhi,obj->material.n_shiny));
   }
 
-  ray_reflected = Ray(point, R);
-  reflection = true;
+
 	return color;
 }
