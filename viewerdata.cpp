@@ -49,7 +49,7 @@ win_height(480)
   updateMatrix();
 }
 
-Vec ViewerData::pixelToWorld(const int wx, const int wy)
+Vec ViewerData::pixelToWorld(const int wx, const int wy)const
 {
   glLoadIdentity();
   GLdouble rx,ry,rz;

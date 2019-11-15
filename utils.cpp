@@ -2,6 +2,7 @@
 #include <time.h>       /* time */
 #include "utils.h"
 
+
 float
 randf()
 {

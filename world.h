@@ -17,8 +17,8 @@ public:
   World() : bgColor(0.0,0.0,0.0), lightEnv(1.0),ka(0.3){}
   World(Vec bgColor, float lightEnv);
 
-  void getVeclightEnv(Vec &c);
-  Vec getVeclightEnv();
+  void getVeclightEnv(Vec &c)const;
+  Vec getVeclightEnv()const;
   ~World(); //destruir os ponteiros para Object
 };
 

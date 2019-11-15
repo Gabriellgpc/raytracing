@@ -3,6 +3,7 @@
 
 Material::Material()
 {
+  this->kr = 0.5;
   this->ks = 0.35;
   this->kd = 0.35;
   this->n_shiny = 1.5;
@@ -25,60 +26,61 @@ void Material::setKs(float ks, float ka)
   this->kd = (1.0 - ka) - ks;
 }
 
-bool Sphere::intersectRay(const Vec &orig, const Vec &dir, Vec &point, double &distance)
+bool
+Sphere::intersectRay(const Ray &ray, Vec &point, double &distance)const
 {
-  float a, b, c;
+  float b, c, t[2];
   float delta;
-  float distanceTmp;
-  Vec pIntersec[2];
-  Vec vecAux = orig - pos;
-  Vec dirNorm = glm::normalize(dir);
-  //TODO como paralelizar o calculo de a, b e c com openMP ??
-  a = 1.0;
-  b = glm::dot(dirNorm, vecAux)*2.0;
+  Vec vecAux = ray.orig - pos;
+
+  b = glm::dot(ray.dir, vecAux)*2.0;
+  if(b > 0.0) //esfera "atras do observador"
+    return false;
   c = glm::dot(vecAux, vecAux) - (this->radius*this->radius);
 
-  delta = b*b - 4.0*a*c;
+  delta = b*b - 4.0f*c;
   if(delta < 0.0)
     return false;
-
-  pIntersec[0] =  dirNorm*(float)(-b + sqrt(delta))/(2.0f*a) + orig;
-  pIntersec[1] =  dirNorm*(float)(-b - sqrt(delta))/(2.0f*a) + orig;
-
-  distance    =  glm::distance(pIntersec[0], orig);
-  point = pIntersec[0];
-  distanceTmp =  glm::distance(pIntersec[1], orig);
-
-  if(distanceTmp < distance)
+  else if(delta > 0)
   {
-    point = pIntersec[1];
+    t[0] = (float)(-b + sqrt(delta))/(2.0f);
+    t[1] = (float)(-b - sqrt(delta))/(2.0f);
+    if(t[0] < t[1])
+      distance = t[0];
+    else
+      distance = t[1];
+  }else{
+    distance = -b/(2.0f);
   }
+  point = ray.orig + ray.dir*(float)distance;
 
-  // glm::dot(point-orig, dir)
-  //para intesecao apenas para o que apos orig
-  // (para evitar problema de falsa intersecao com objetos que estao antes de orig)
-  return glm::dot(point-orig, dir) > 0.0;
+  return true;
 }
-bool Plane::intersectRay(const Vec &orig, const Vec &dir, Vec &point, double &distance)
+bool
+Plane::intersectRay(const Ray &ray, Vec &point, double &distance)const
 {
   //equacao do plano: ax + by + cz + d = 0
-  float n_dot_v = glm::dot(Normal, dir);
-  float d;
-  if(n_dot_v == 0.0)
+  float n_dot_v = glm::dot(Normal, ray.dir);
+  float D, t;
+  if(n_dot_v == 0.0 || n_dot_v > 1.0) //caso em que não tem intersecao ou que esta 'atras' do plano
     return false;
-  d = glm::dot(Normal, pos);
-  distance = (d + glm::dot(Normal, orig))/n_dot_v;
-  point = glm::normalize(dir)*(float)distance + orig;
+  D = -glm::dot(Normal, pos);
 
-  distance = (distance < 0.0)?-distance:distance;
+  t = (-D - glm::dot(Normal, ray.orig))/n_dot_v;
+  if(t < 0.0)
+    return false;
+
+  point = ray.dir*(float)t + ray.orig;
+  distance = t;
   return true;
 }
 
-void Sphere::normalAt(const Vec &point, Vec &normal)
+void
+Sphere::normalAt(const Vec &point, Vec &normal)const
 {
   normal =  glm::normalize(point-pos);
 }
-void Plane::normalAt(const Vec &point, Vec &normal)
+void Plane::normalAt(const Vec &point, Vec &normal)const
 {
   normal = glm::normalize(this->Normal);
 }

@@ -4,7 +4,7 @@
 #include <string.h>
 #include <omp.h>
 
-#define PARALLEL
+// #define PARALLEL
 
 //height - i - 1 => isso com que o a coordenada na imagem (0,0) seja no canto inferior esquerdo
 //isso eh necessario pois eh a referencia do opengl
@@ -53,15 +53,17 @@ void ImageRGBf::setColor(uint i, uint j, const Vec color){
   IMG(i, j, 2) = color[2];//set BLUE
 }
 
-void RayTracer::rayTrace(ImageRGBf &img, int numReflection){
+void
+RayTracer::rayTrace(ImageRGBf &img, int numReflection)const
+{
 #ifndef PARALLEL
   for(int lin = 0; lin < img.height; lin++)
   {
     for (int col = 0; col < img.width; col++)
     {
-      Vec ray = viewer.pixelToWorld(col, lin);
+      Vec ray_dir = viewer.pixelToWorld(col, lin);
       {
-        Vec color = trace(viewer.camera.pos, ray, numReflection);
+        Vec color = trace(Ray(viewer.camera.pos, ray_dir), numReflection);
         img.setColor(lin, col, color);
       }
     }
@@ -83,11 +85,8 @@ void RayTracer::rayTrace(ImageRGBf &img, int numReflection){
   {
     for (int col = 0; col < img.width; col++)
     {
-      (void)numReflection;
-      {
-        Vec color = trace(viewer.camera.pos, rayList[lin*img.width + col], numReflection);
+        Vec color = trace(Ray(viewer.camera.pos, rayList[lin*img.width + col]), numReflection);
         img.setColor(lin, col, color);
-      }
     }
   }
   delete[] rayList;
@@ -95,104 +94,102 @@ void RayTracer::rayTrace(ImageRGBf &img, int numReflection){
 }
 
 
-Vec RayTracer::trace(const Vec &rayStart,const Vec &rayDir, int numReflection)
+Vec
+RayTracer::trace(const Ray ray, int num_reflection)const
 {
-	Vec point;
-	Vec resultColor(0.0);
-	Vec orig = rayStart;
-	Vec dir = rayDir;
-	float k;
+  Ray  ray_reflected;
+  bool reflection;
+	Vec  point_intersection;
+	Vec  result_color(0.0);
 	Object* obj=NULL;
-  // bool noLight = true;
 
-  numReflection--;
-  //Caso base 1
+
+  //Caso base
 	//calcular o ponto de intersecao mais proximo
-	if(closestPoint(orig,dir,point,&obj) == false)
+	if(closestPoint(ray, point_intersection, &obj) == false)
     return world.bgColor;
 
 	for(auto &lsource : world.lights)
   {
-		resultColor += shade(lsource,rayStart,point, obj, dir);
-    // if(resultColor != Vec(0.0))
-    //   noLight = true;
+		result_color += shade(ray,
+                          lsource,
+                          point_intersection,
+                          obj,
+                          ray_reflected,
+                          reflection);
+    if((obj->material.kr != 0.0) && reflection && (num_reflection != 0))
+    {
+      result_color *= 0.5;
+      result_color += obj->material.kr*trace(ray_reflected, num_reflection--);
+    }
 	}
-  // resultColor += world.getVeclightEnv()*obj->material.color;
-  //caso base 2
 
-  if(numReflection == 0)
-    return resultColor;
-
-  // Vec N;
-  // obj->normalAt(point, N);
-  // if(glm::dot(N, dir) < 0)
-  // {
-  //   // puts("Cai no caso!");
-  //   return resultColor;
-  // }
-
-  // Vec colorRef = trace(point, dir, numReflection);
-  // resultColor  = (resultColor + colorRef)/2.0f;
-  // if(colorRef == Vec(0.0))resultColor*=2.0f;
-  return 0.8f*resultColor + 0.2f*trace(point, dir, numReflection);
+  return result_color;
 }
 
-bool RayTracer::closestPoint(const Vec &orig,const Vec &dir,Vec &point,Object **obj)
+bool
+RayTracer::closestPoint(/*in*/const Ray ray,
+                        /*out*/Vec &point_intersec,
+                        /*out*/Object **obj)const
 {
-	double smallerDistance=MAXDOUBLE;
-  bool test = false;
+	double smallerDistance = MAXDOUBLE;
+  bool intersec = false;
   /*itera os objetos, calcula o ponto de inteseccao  e pega o menor deles*/
   for(auto it = world.objs.begin();it != world.objs.end();it++){
     Vec pointTmp;
     double distTmp;
-    if((*it)->intersectRay(orig, dir, pointTmp, distTmp)){// ===> TODO
-      if(distTmp < smallerDistance){
+    if((*it)->intersectRay(ray, pointTmp, distTmp)){// ===> TODO
+      if(distTmp < smallerDistance && (distTmp != 0.0)){
         smallerDistance = distTmp;
         *obj = *it;
-        point = pointTmp;
-        test = true;
+        point_intersec = pointTmp;
+        intersec = true;
       }
     }
   }
-  return test;
+  return intersec;
 }
 
-Vec RayTracer::shade(LightSource &source,const Vec &observer,Vec &point,Object *obj,Vec &R){
-	Vec N;
-	Vec L;
-  Vec V;
+
+Vec
+RayTracer::shade(/*in*/const Ray ray,
+                 /*in*/const LightSource &source,
+                 /*in*/const Vec &point, //ponto sobre a superficie do objeto
+                 /*in*/const Object *obj,
+                 /*out*/Ray &ray_reflected,
+                 /*out*/bool& reflection)const
+{
+  reflection = false;
+
+	Vec N, L, V, R;
   Vec color;
   Vec tmpP;
-  double tmpDist;
+  Object* objTmp = NULL;
   //vetor L
   L = glm::normalize(source.pos - point);
 
   //testes para considerar objetos entre o ponto e a fonte de luz
-  for(auto it = world.objs.begin();it != world.objs.end();it++)
-    if((*it)->intersectRay(point, L, tmpP, tmpDist) && *it != obj)
-    {
-      if(tmpDist < glm::distance(point, source.pos))
-        return world.getVeclightEnv()*obj->material.color;
-    }
+  //efeito de sombra
+  Ray rayL(point, L);
+  if(closestPoint(rayL, tmpP, &objTmp))
+      return Vec(0,0,0);
 
   //Observador
-  V = glm::normalize(observer - point);
+  V = -ray.dir;
 	//calcula a normal
-	obj->normalAt(point,N);
+	obj->normalAt(point, N);
 	//raio refletido R
 	R = (2.0f*N)*glm::dot(N,L) - L;
 
   //Equacao de iluminacao
-	// float fatt = 1.0/(0.00*pow(glm::distance(point, source.pos), 2)+1.0);//
   float fatt = 1.0;
-  // float fatt = 1.0/(0.3*pow(glm::distance(point, source.pos), 2)+1.0);//
 	double cosTetha, cosPhi;
 
   cosTetha = glm::dot(N,L);
 	cosPhi   = glm::dot(R,V);
 
-  cosTetha = (cosTetha < 0.0)?0.0:cosTetha;
-  cosPhi = (cosPhi < 0.0)?0.0:cosPhi;
+  // cosTetha = (cosTetha < 0.0)?0.0:cosTetha;
+  // cosPhi = (cosPhi < 0.0)?0.0:cosPhi;
 
   for(int ch = 0; ch < 3; ch++)
   {
@@ -201,5 +198,7 @@ Vec RayTracer::shade(LightSource &source,const Vec &observer,Vec &point,Object *
                                        obj->material.ks*pow(cosPhi,obj->material.n_shiny));
   }
 
+  ray_reflected = Ray(point, R);
+  reflection = true;
 	return color;
 }

@@ -18,6 +18,7 @@ public:
   //ks: coef. reflexao especular
   //kd: coef. reflexao difusa
   //n_shiny: taxa de espalhamento da reflexao especular (modelo de Phong)
+  float kr;
   float ks, kd;
   float n_shiny;
   Vec   color;
@@ -37,10 +38,11 @@ public:
   Vec pos;
   Material material;
 
-  Object():pos(0.0,0.0,0.0), material() {}
-  Object(Material mat, Vec pos): material(mat), pos(pos) {}
-  virtual bool intersectRay(const Vec &orig, const Vec &dir, Vec &point, double &distance) = 0;
-  virtual void normalAt(const Vec &point, Vec &normal) = 0;
+  ~Object(){}
+  Object():pos(0.0,0.0,0.0),material() {}
+  Object(Material mat, Vec pos):pos(pos), material(mat) {}
+  virtual bool intersectRay(const Ray &ray, Vec &point, double &distance)const = 0;
+  virtual void normalAt(const Vec &point, Vec &normal)const = 0;
 };
 //#############################################################################
 
@@ -49,8 +51,8 @@ public:
   float radius;
 
   Sphere(Material material, Vec pos, float radius):Object(material, pos), radius(radius) {}
-  bool intersectRay(const Vec &orig, const Vec &dir, Vec &point, double &distance);
-  void normalAt(const Vec &point, Vec &normal);
+  bool intersectRay(const Ray &ray, Vec &point, double &distance)const;
+  void normalAt(const Vec &point, Vec &normal)const;
 };
 
 class Plane:public Object{
@@ -58,7 +60,7 @@ public:
   Vec Normal;
 
   Plane(Material material, Vec pos, Vec normal):Object(material, pos), Normal(glm::normalize(normal)){}
-  bool intersectRay(const Vec &orig, const Vec &dir, Vec &point, double &distance);
-  void normalAt(const Vec &point, Vec &normal);
+  bool intersectRay(const Ray &ray, Vec &point, double &distance)const;
+  void normalAt(const Vec &point, Vec &normal)const;
 };
 #endif

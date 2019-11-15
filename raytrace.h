@@ -23,19 +23,26 @@ public:
   // void save(const char**file);
 };
 
+
 class RayTracer{
 public:
 	World      world;
 	ViewerData viewer;
 public:
 	RayTracer(): world(), viewer(){}
-	//Metodo de renderizacao
-	//WARNING: levar em conta objetos fora do frustum ??
-	void rayTrace(ImageRGBf &img, int numReflection);
+
+	void rayTrace(ImageRGBf &img, int num_reflection)const;
 private:
 	//metodos auxiliares
-  Vec trace(const Vec &rayStart,const Vec &rayDir, int numReflection);//Traca um raio saindo de um pixel e retorna uma cor
-	bool closestPoint(const Vec &orig,const Vec &dir,Vec &point,Object **obj);//Calcula ponto de intersecao entre o raio e o objeto mais proximo
-	Vec shade(LightSource &source,const Vec &observer,Vec &point,Object *obj,Vec &R);   //Aplica a equacao de iluminacao, retorna uma cor
+  Vec trace(const Ray ray, int numReflection)const;//Traca um raio saindo de um pixel e retorna uma cor
+	bool closestPoint(/*in*/const Ray ray,
+                    /*out*/Vec &point_intersec,
+                    /*out*/Object **obj)const;//Calcula ponto de intersecao entre o raio e o objeto mais proximo
+	Vec shade(/*in*/const Ray ray,
+            /*in*/const LightSource &source,
+            /*in*/const Vec &point, //ponto sobre a superficie do objeto
+            /*in*/const Object *obj,
+            /*out*/Ray  &ray_reflected,
+            /*out*/bool &reflection)const;   //Aplica a equacao de iluminacao, retorna uma cor
 };
 #endif//RAYTRACE_H

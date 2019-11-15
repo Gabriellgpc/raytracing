@@ -15,7 +15,7 @@ float angZ = 0.0;
 #define WIDTH 640
 #define HEIGHT 480
 
-int numReflection = 1;
+int numReflection = 0;
 
 RayTracer raytracer;
 ImageRGBf img(WIDTH,HEIGHT);
@@ -61,12 +61,10 @@ void init(int win_width, int win_height)
   raytracer.world.lightEnv= 0.3;
   raytracer.world.ka = 0.1;
 
-  // material.n_shiny = 500.0;
-  // material.color = Vec(1.0, 1.0, 1.0);
-  // material.setKs(0.3, raytracer.world.ka);
+
   // material.n_shiny = 50.0;
   // material.color = Vec(1.0, 1.0, 1.0);
-  // material.setKs(0.4, raytracer.world.ka);
+  // material.setKs(0.7, raytracer.world.ka);
   // raytracer.world.objs.push_back(new Plane(Material(), Vec(0.0,0.0,20.0) , Vec(0.0, 0.0, -1.0)));
 
   // material.n_shiny = 10.0;
@@ -100,8 +98,8 @@ void init(int win_width, int win_height)
   raytracer.world.objs.push_back(new Sphere(material, Vec(-1.0,-1.0,0.0)*1.414213562f, 1.0));
   // raytracer.world.objs.push_back(new Sphere(Material(), Vec(0.0,-2.0,0.0) , 1.0));
 
-  raytracer.world.lights.push_back( LightSource(Vec(0.0,0.0,-10.0), Vec(1.0,1.0,1.0)) );
-  raytracer.world.lights.push_back( LightSource(Vec(0.0,-10.0,0.0), Vec(1.0,1.0,1.0)) );
+  raytracer.world.lights.push_back( LightSource(Vec(10.0,0.0,-10.0), Vec(1.0,1.0,1.0)) );
+  // raytracer.world.lights.push_back( LightSource(Vec(0.0,-10.0,0.0), Vec(1.0,1.0,1.0)) );
   // raytracer.world.lights.push_back( LightSource(Vec(0.0,0.0,0), Vec(1.0,1.0,1.0)) );
   // raytracer.world.lights.push_back( LightSource(Vec(0.0,0.0,-10), Vec(1.0,1.0,1.0)) );
   // raytracer.world.lights.push_back( LightSource(Vec(-20.0,0.0,0.0), Vec(1.0,1.0,1.0)) );
@@ -122,12 +120,17 @@ void mouse(int button, int state, int x, int y)
 }
 
 void keyboard (unsigned char key, int x, int y){
+
+#define MOVE_LIGHT
+
 #define STEP_R 0.1f //5 graus
 #define STEP_D 2.0f
   static Vec axisX(1.0, 0.0, 0.0);
   static Vec axisY(0.0, 1.0, 0.0);
   static Vec axisZ(0.0, 0.0, 1.0);
+
   glm::vec4 posCam(raytracer.viewer.camera.pos, 1.0);
+  glm::vec4 posLight(raytracer.world.lights.begin()->pos, 1.0);
   glm::mat4 model = glm::mat4(1.0f);
 
   switch (key){
@@ -150,10 +153,18 @@ void keyboard (unsigned char key, int x, int y){
     model = glm::rotate(model, -STEP_R, axisZ);
     break;
   case 'd':
+#ifndef MOVE_LIGHT
     posCam.z-=STEP_D;
+#else
+
+#endif
     break;
   case 'D':
-    posCam.z+=STEP_D;
+#ifndef MOVE_LIGHT
+  posCam.z+=STEP_D;
+#else
+
+#endif
     break;
   case 'o':
     posCam= glm::vec4(0.0, 0.0, -5.0, 1.0);
@@ -164,8 +175,14 @@ void keyboard (unsigned char key, int x, int y){
   default:
     break;
   }
+#ifndef MOVE_LIGHT
   posCam = model*posCam;
   raytracer.viewer.moveCamera(posCam);
+#else
+  posLight = model*posLight;
+  raytracer.world.lights.begin()->pos = posLight;
+#endif
+
   display();
 }
 
