@@ -178,7 +178,7 @@ void keyboard (unsigned char key, int x, int y){
   }
 #ifndef MOVE_LIGHT
   posCam = model*posCam;
-  raytracer.viewer.moveCamera(posCam);
+  raytracer.viewer.moveCamera(Vec(posCam.x,posCam.y, posCam.z));
 #else
   posLight = model*posLight;
   raytracer.world.lights.begin()->pos = posLight;
