@@ -62,11 +62,12 @@ void init(int win_width, int win_height)
   //Configurando luz ambiente e background
   raytracer.world.bgColor = Vec(0, 0, 0);
   raytracer.world.lightEnv= 1.0;
-  raytracer.world.ka = 0.5;
+  raytracer.world.ka = 0.0;
 
-  material.n_shiny = 1.0;
+  material.n_shiny = 100.0;
   material.color = Vec(1.0, 1.0, 1.0);
   material.setKs(0.5, raytracer.world.ka);
+  material.kr = 1.0;
   pos    = Vec(0, 0, 0);
   radius = 2.0;
   raytracer.world.objs.push_back(new Sphere(material, pos, radius));
@@ -94,8 +95,8 @@ void init(int win_width, int win_height)
   raytracer.world.objs.push_back(new Sphere(material, pos, radius));
 
   material.n_shiny = 30.0;
-  material.kr = 0.0;
-  material.color = Vec(0.0, 0.0, 1.0);
+  material.kr = 1.0;
+  material.color = Vec(1.0, 1.0, 0.0);
   material.setKs(0.1, raytracer.world.ka);
   pos    = Vec(0, 0, 4.0);
   radius = 1.0;
@@ -167,7 +168,7 @@ void keyboard (unsigned char key, int x, int y){
 #endif
     break;
   case 'o':
-    posCam= glm::vec4(0.0, 0.0, -5.0, 1.0);
+    posCam= glm::vec4(0.0, 4.0, -10.0, 1.0);
     break;
   case 27:
     exit(0);

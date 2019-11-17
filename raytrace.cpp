@@ -119,7 +119,6 @@ RayTracer::trace(const Ray ray, int num_reflection)const
                           reflection);
     if((obj->material.kr != 0.0) && reflection && (num_reflection != 0))
     {
-      result_color *= 0.5f;
       result_color += obj->material.kr*trace(ray_reflected, num_reflection--);
     }
 	}
@@ -182,12 +181,13 @@ RayTracer::shade(/*in*/const Ray ray,
   cosTetha = glm::dot(N,L);
 	cosPhi   = glm::dot(R,V);
 
+  #define FABS(x) (((x)<0.0)?-(x):(x))
 
-
+  cosPhi = FABS(cosPhi);
   if(cosTetha < 0.0)
   {
     // ray_reflected = Ray(point, N);
-    return world.getVeclightEnv()*obj->material.color;
+    return world.getVeclightEnv()*obj->material.color*(obj->material.kd);
   }
 
   reflection = true;
@@ -196,7 +196,7 @@ RayTracer::shade(/*in*/const Ray ray,
   //efeito de sombra
   Ray rayL(point, L);
   if(closestPoint(rayL, tmpP, &objTmp))
-      return world.getVeclightEnv()*obj->material.color;
+      return world.getVeclightEnv()*obj->material.color*(obj->material.kd);
 
   // #define SATURADOR(x) (((x) < 0.0)?world.lightEnv*world.ka*obj->material.color[ch]:(x))
   for(int ch = 0; ch < 3; ch++)
