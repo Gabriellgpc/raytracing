@@ -198,13 +198,14 @@ RayTracer::shade(/*in*/const Ray ray,
   if(closestPoint(rayL, tmpP, &objTmp))
       return world.getVeclightEnv()*obj->material.color;
 
+  // #define SATURADOR(x) (((x) < 0.0)?world.lightEnv*world.ka*obj->material.color[ch]:(x))
   for(int ch = 0; ch < 3; ch++)
   {
     color[ch] = world.lightEnv*world.ka*obj->material.color[ch] +
                 fatt*source.color[ch]*(obj->material.kd*obj->material.color[ch]* cosTetha +
                                        obj->material.ks*pow(cosPhi,obj->material.n_shiny));
+    // color[ch] = SATURADOR(color[ch]);
   }
-
 
 	return color;
 }

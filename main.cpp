@@ -52,80 +52,77 @@ void init(int win_width, int win_height)
   glClearColor (0.0, 0.0, 0.0, 0.0);
   glClear(GL_COLOR_BUFFER_BIT);
   Material material;
+  Vec pos;
+  float radius = 1.0;
 
   //Configurando a matriz de projecao
   raytracer.viewer.setWindowSize(win_width, win_height); //atualiza dimensoes da tela
+  raytracer.viewer.moveCamera(Vec(0.0, 4.0, -10.0));
 
   //Configurando luz ambiente e background
-  raytracer.world.bgColor = Vec(0.8, 0.8, 0.8);
-  raytracer.world.lightEnv= 0.5;
+  raytracer.world.bgColor = Vec(0, 0, 0);
+  raytracer.world.lightEnv= 1.0;
   raytracer.world.ka = 0.5;
 
+  material.n_shiny = 1.0;
+  material.color = Vec(1.0, 1.0, 1.0);
+  material.setKs(0.5, raytracer.world.ka);
+  pos    = Vec(0, 0, 0);
+  radius = 2.0;
+  raytracer.world.objs.push_back(new Sphere(material, pos, radius));
 
-  // material.n_shiny = 50.0;
-  // material.color = Vec(1.0, 1.0, 1.0);
-  // material.setKs(0.7, raytracer.world.ka);
-  // raytracer.world.objs.push_back(new Plane(Material(), Vec(0.0,0.0,20.0) , Vec(0.0, 0.0, -1.0)));
-
-  // material.n_shiny = 10.0;
-  // material.color = Vec(1.0, 0.0, 0.0);
-  // material.setKs(0.4, raytracer.world.ka);
-  // raytracer.world.objs.push_back(new Plane(Material(), Vec(0.0,20.0,0.0) , Vec(0.0, -1.0, 0.0)));
-
-  material.n_shiny = 50.0;
-  material.color = Vec(1.0, 0.0, 0.0);
-  material.setKs(0.4, raytracer.world.ka);
-  raytracer.world.objs.push_back(new Sphere(material, Vec(1.0,0.0,0.0) , 1.0));
-
-  material.n_shiny = 200.0;
+  material.n_shiny = 10.0;
   material.color = Vec(1.0, 0.0, 0.0);
   material.setKs(0.5, raytracer.world.ka);
-  // raytracer.world.objs.push_back(new Sphere(material, Vec(1.0,1.0,0.0)*1.414213562f , 1.0));
-
-  material.n_shiny = 100.0;
-  material.color = Vec(0.0, 1.0, 0.0);
-  material.setKs(0.2, raytracer.world.ka);
-  raytracer.world.objs.push_back(new Sphere(material, Vec(-1.0,1.0,0.0)*1.414213562f, 1.0));
+  pos    = Vec(-4.0, 0, 0);
+  radius = 1.0;
+  raytracer.world.objs.push_back(new Sphere(material, pos, radius));
 
   material.n_shiny = 50.0;
-  material.color = Vec(0.0, 0.0, 1.0);
-  material.setKs(0.7, raytracer.world.ka);
-  raytracer.world.objs.push_back(new Sphere(material, Vec(0.6,-1.0,0.0)*1.414213562f, 0.25));
+  material.color = Vec(0.0, 1.0, 0.0);
+  material.setKs(0.4, raytracer.world.ka);
+  pos    = Vec(4.0, 0, 0);
+  radius = 1.0;
+  raytracer.world.objs.push_back(new Sphere(material, pos, radius));
 
   material.n_shiny = 10.0;
   material.kr = 0.0;
-  material.color = Vec(1.0, 1.0, 1.0);
+  material.color = Vec(0.0, 0.0, 1.0);
   material.setKs(0.1, raytracer.world.ka);
-  raytracer.world.objs.push_back(new Sphere(material, Vec(-1.0,-1.0,0.0)*1.414213562f, 1.0));
-  // raytracer.world.objs.push_back(new Sphere(Material(), Vec(0.0,-2.0,0.0) , 1.0));
+  pos    = Vec(0, 0, -4.0);
+  radius = 1.0;
+  raytracer.world.objs.push_back(new Sphere(material, pos, radius));
 
-  raytracer.world.lights.push_back( LightSource(Vec(10.0,0.0,-10.0), Vec(1.0,1.0,1.0)) );
-  // raytracer.world.lights.push_back( LightSource(Vec(10.0,0.0,-10.0), Vec(1.0,1.0,1.0)) );
-  // raytracer.world.lights.push_back( LightSource(Vec(10.0,0.0,-10.0), Vec(1.0,1.0,1.0)) );
-  // raytracer.world.lights.push_back( LightSource(Vec(0.0,-10.0,0.0), Vec(1.0,1.0,1.0)) );
-  // raytracer.world.lights.push_back( LightSource(Vec(0.0,0.0,0), Vec(1.0,1.0,1.0)) );
-  // raytracer.world.lights.push_back( LightSource(Vec(0.0,0.0,-10), Vec(1.0,1.0,1.0)) );
-  // raytracer.world.lights.push_back( LightSource(Vec(-20.0,0.0,0.0), Vec(1.0,1.0,1.0)) );
-  // raytracer.world.lights.push_back( LightSource(Vec(0.0,10,0.0), Vec(1.0,1.0,1.0)) );
-  // raytracer.world.lights.push_back( LightSource(Vec(0.0,-25,0.0), Vec(1.0,1.0,1.0)) );
+  material.n_shiny = 30.0;
+  material.kr = 0.0;
+  material.color = Vec(0.0, 0.0, 1.0);
+  material.setKs(0.1, raytracer.world.ka);
+  pos    = Vec(0, 0, 4.0);
+  radius = 1.0;
+  raytracer.world.objs.push_back(new Sphere(material, pos, radius));
+
+  raytracer.world.lights.push_back( LightSource(Vec(10.0,10.0,-10.0), Vec(1.0,1.0,1.0)));
 };
 
-void mouse(int button, int state, int x, int y)
+void spinLight()
 {
-  // static Vec lookAt;
-  //
-  // if (state == GLUT_DOWN)
-  // {
-  //   raytracer.viewer.pixelToWorld(x, y, lookAt);
-  //   raytracer.viewer.setLookAt(lookAt);
-  //   display();
-  // }
+  #define STEP_LIGHT_R 0.02f //5 graus
+  static Vec axisY(0.0, 1.0, 0.0);
+
+  glm::vec4 posLight(raytracer.world.lights.begin()->pos, 1.0);
+  glm::mat4 model = glm::mat4(1.0f);
+
+  model = glm::rotate(model, STEP_LIGHT_R, axisY);
+
+  posLight = model*posLight;
+  raytracer.world.lights.begin()->pos = posLight;
+
+  display();
 }
 
 void keyboard (unsigned char key, int x, int y){
 
 // #define MOVE_LIGHT
-
 #define STEP_R 0.1f //5 graus
 #define STEP_D 2.0f
   static Vec axisX(1.0, 0.0, 0.0);
@@ -202,9 +199,8 @@ int main(int argc, char **argv)
   glutCreateWindow ("Ray Tracing Project - UFRN - GC");
   init(WIDTH, HEIGHT);
 
+  glutIdleFunc(spinLight);
   glutDisplayFunc(display);
-
-  glutMouseFunc(mouse);
   glutKeyboardFunc(keyboard);
 
   glutMainLoop();
