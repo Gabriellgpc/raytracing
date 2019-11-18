@@ -159,7 +159,9 @@ void spinLight()
   model = glm::rotate(model, STEP_LIGHT_R, axisY);
 
   posLight = model*posLight;
-  raytracer.world.lights.begin()->pos = posLight;
+  Vec aux(posLight.x,posLight.y,posLight.z);
+
+  raytracer.world.lights.begin()->pos = aux;
 
   display();
 }

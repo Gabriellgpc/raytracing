@@ -2,7 +2,7 @@ BASEDIR	=	.
 
 CC = g++
 CXX = g++
-CPPFLAGS = -Wall -O2 -I . -fopenmp	-pg -g
+CPPFLAGS = -Wall -O2 -I . -fopenmp	-pg -g -std=c++11
 LDFLAGS = -L ${BASEDIR}/lib
 LDLIBS = -lGLU -lGL -lglut -lm	#-lutils -lraytrace
 
