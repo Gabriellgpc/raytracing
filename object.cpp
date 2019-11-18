@@ -69,7 +69,7 @@ Plane::intersectRay(const Ray &ray, Vec &point, double &distance)const
     return false;
 
   t = glm::dot(pos - ray.orig, Normal)/n_dot_v;
-  if(t < 0.0)
+  if(t < 0.01)
     return false;
 
   point = ray.dir*(float)t + ray.orig;

@@ -119,7 +119,7 @@ RayTracer::trace(const Ray ray, int num_reflection)const
                           reflection);
     if((obj->material.kr != 0.0) && reflection && (num_reflection != 0))
     {
-      result_color += obj->material.kr*trace(ray_reflected, num_reflection--);
+      result_color += obj->material.kr*trace(ray_reflected, num_reflection-1);
     }
 	}
 
