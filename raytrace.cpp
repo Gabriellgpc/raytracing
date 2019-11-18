@@ -172,7 +172,7 @@ RayTracer::shade(/*in*/const Ray ray,
 	//calcula a normal
 	obj->normalAt(point, N);
 	//raio refletido R
-	R = glm::normalize((2.0f*N)*glm::dot(N,L) - L);
+	R = (2.0f*N)*glm::dot(N,L) - L;
 
   //Equacao de iluminacao
   float fatt = 1.0;
@@ -183,8 +183,9 @@ RayTracer::shade(/*in*/const Ray ray,
 
   #define FABS(x) (((x)<0.0)?-(x):(x))
 
+
   cosPhi = FABS(cosPhi);
-  if(cosTetha < 0.0)
+  if(cosTetha <= 0.0)
   {
     // ray_reflected = Ray(point, N);
     return world.getVeclightEnv()*obj->material.color*(obj->material.kd);

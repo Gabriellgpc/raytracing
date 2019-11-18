@@ -64,14 +64,15 @@ void init(int win_width, int win_height)
   raytracer.world.lightEnv= 1.0;
   raytracer.world.ka = 0.0;
 
-  material.n_shiny = 100.0;
+  material.n_shiny = 200.0;
   material.color = Vec(1.0, 1.0, 1.0);
   material.setKs(0.5, raytracer.world.ka);
-  material.kr = 1.0;
+  material.kr = 0.6;
   pos    = Vec(0, 0, 0);
   radius = 2.0;
   raytracer.world.objs.push_back(new Sphere(material, pos, radius));
 
+  material.kr = 0.0;
   material.n_shiny = 10.0;
   material.color = Vec(1.0, 0.0, 0.0);
   material.setKs(0.5, raytracer.world.ka);
@@ -79,6 +80,7 @@ void init(int win_width, int win_height)
   radius = 1.0;
   raytracer.world.objs.push_back(new Sphere(material, pos, radius));
 
+  material.kr = 0.0;
   material.n_shiny = 50.0;
   material.color = Vec(0.0, 1.0, 0.0);
   material.setKs(0.4, raytracer.world.ka);
@@ -102,14 +104,15 @@ void init(int win_width, int win_height)
   radius = 1.0;
   raytracer.world.objs.push_back(new Sphere(material, pos, radius));
 
-  material.kr = 1.0;
-  material.n_shiny = 30.0;
-  material.color = Vec(0.0, 1.0, 1.0);
+  material.n_shiny = 60.0;
+  material.kr = 0.1;
+  material.color = Vec(0.6, 0.6, 0.6);
   material.setKs(0.7, raytracer.world.ka);
   pos    = Vec(0, 0, 90.0);
   normal = Vec(0, 0, -1.0);
   raytracer.world.objs.push_back(new Plane(material, pos, normal));
 
+  material.kr = 0.0;
   material.n_shiny = 30.0;
   material.color = Vec(1.0, 1.0, 1.0);
   material.setKs(0.1, raytracer.world.ka);
@@ -117,6 +120,7 @@ void init(int win_width, int win_height)
   normal = Vec(-1, 0, 0);
   raytracer.world.objs.push_back(new Plane(material, pos, normal));
 
+  material.kr = 0.0;
   material.n_shiny = 30.0;
   material.color = Vec(1.0, 1.0, 0.0);
   material.setKs(0.1, raytracer.world.ka);
@@ -124,6 +128,7 @@ void init(int win_width, int win_height)
   normal = Vec(1, 0, 0);
   raytracer.world.objs.push_back(new Plane(material, pos, normal));
 
+  material.kr = 0.0;
   material.n_shiny = 30.0;
   material.color = Vec(0.0, 0.0, 1.0);
   material.setKs(0.6, raytracer.world.ka);
@@ -131,6 +136,7 @@ void init(int win_width, int win_height)
   normal = Vec(0, 0, 1);
   raytracer.world.objs.push_back(new Plane(material, pos, normal));
 
+  material.kr = 0.0;
   material.n_shiny = 30.0;
   material.color = Vec(0.0, 1.0, 0.0);
   material.setKs(0.1, raytracer.world.ka);
@@ -138,6 +144,7 @@ void init(int win_width, int win_height)
   normal = Vec(0, -1, 0);
   raytracer.world.objs.push_back(new Plane(material, pos, normal));
 
+  material.kr = 0.0;
   material.n_shiny = 100.0;
   material.color = Vec(1.0, 0.0, 0.0);
   material.setKs(0.3, raytracer.world.ka);
@@ -242,7 +249,7 @@ int main(int argc, char **argv)
   glutInitDisplayMode (GLUT_DOUBLE | GLUT_RGB);
   glutInitWindowSize (WIDTH, HEIGHT);
   glutInitWindowPosition (0, 0);
-  glutCreateWindow ("Ray Tracing Project - UFRN - GC");
+  glutCreateWindow ("Ray Tracing Project - UFRN - CG - 2019.2");
   init(WIDTH, HEIGHT);
 
   glutIdleFunc(spinLight);
