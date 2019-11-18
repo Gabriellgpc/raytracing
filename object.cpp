@@ -62,14 +62,13 @@ Sphere::intersectRay(const Ray &ray, Vec &point, double &distance)const
 bool
 Plane::intersectRay(const Ray &ray, Vec &point, double &distance)const
 {
-  //equacao do plano: ax + by + cz + d = 0
+  //equacao do plano: Ax + By + Cz + D = 0; normal = <A,B,C>
   float n_dot_v = glm::dot(Normal, ray.dir);
-  float D, t;
-  if(n_dot_v == 0.0 || n_dot_v > 1.0) //caso em que não tem intersecao ou que esta 'atras' do plano
+  float t;
+  if(n_dot_v == 0.0) //caso em que não tem intersecao ou que esta 'atras' do plano
     return false;
-  D = -glm::dot(Normal, pos);
 
-  t = (-D - glm::dot(Normal, ray.orig))/n_dot_v;
+  t = glm::dot(pos - ray.orig, Normal)/n_dot_v;
   if(t < 0.0)
     return false;
 

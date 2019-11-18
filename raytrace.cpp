@@ -4,7 +4,7 @@
 #include <string.h>
 #include <omp.h>
 
-// #define PARALLEL
+#define PARALLEL
 
 //height - i - 1 => isso com que o a coordenada na imagem (0,0) seja no canto inferior esquerdo
 //isso eh necessario pois eh a referencia do opengl
@@ -138,7 +138,7 @@ RayTracer::closestPoint(/*in*/const Ray ray,
     Vec pointTmp;
     double distTmp;
     if((*it)->intersectRay(ray, pointTmp, distTmp)){// ===> TODO
-      if(distTmp < smallerDistance && (distTmp != 0.0)){
+      if( (distTmp < smallerDistance) && (distTmp > 0.0)){
         smallerDistance = distTmp;
         *obj = *it;
         point_intersec = pointTmp;
@@ -195,8 +195,14 @@ RayTracer::shade(/*in*/const Ray ray,
   //testes para considerar objetos entre o ponto e a fonte de luz
   //efeito de sombra
   Ray rayL(point, L);
+  double distTmp;
+  Vec pointCopy = point;
   if(closestPoint(rayL, tmpP, &objTmp))
+  {
+    objTmp->intersectRay(rayL, tmpP, distTmp);
+    if(  (distTmp < glm::distance(pointCopy, world.lights.begin()->pos )) && (objTmp != obj))
       return world.getVeclightEnv()*obj->material.color*(obj->material.kd);
+  }
 
   // #define SATURADOR(x) (((x) < 0.0)?world.lightEnv*world.ka*obj->material.color[ch]:(x))
   for(int ch = 0; ch < 3; ch++)
@@ -204,7 +210,6 @@ RayTracer::shade(/*in*/const Ray ray,
     color[ch] = world.lightEnv*world.ka*obj->material.color[ch] +
                 fatt*source.color[ch]*(obj->material.kd*obj->material.color[ch]* cosTetha +
                                        obj->material.ks*pow(cosPhi,obj->material.n_shiny));
-    // color[ch] = SATURADOR(color[ch]);
   }
 
 	return color;

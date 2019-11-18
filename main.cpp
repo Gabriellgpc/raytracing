@@ -52,14 +52,14 @@ void init(int win_width, int win_height)
   glClearColor (0.0, 0.0, 0.0, 0.0);
   glClear(GL_COLOR_BUFFER_BIT);
   Material material;
-  Vec pos;
+  Vec pos, normal;
   float radius = 1.0;
 
   //Configurando a matriz de projecao
   raytracer.viewer.setWindowSize(win_width, win_height); //atualiza dimensoes da tela
   raytracer.viewer.moveCamera(Vec(0.0, 4.0, -10.0));
 
-  //Configurando luz ambiente e background
+  // //Configurando luz ambiente e background
   raytracer.world.bgColor = Vec(0, 0, 0);
   raytracer.world.lightEnv= 1.0;
   raytracer.world.ka = 0.0;
@@ -102,12 +102,55 @@ void init(int win_width, int win_height)
   radius = 1.0;
   raytracer.world.objs.push_back(new Sphere(material, pos, radius));
 
-  raytracer.world.lights.push_back( LightSource(Vec(10.0,10.0,-10.0), Vec(1.0,1.0,1.0)));
+  material.kr = 1.0;
+  material.n_shiny = 30.0;
+  material.color = Vec(0.0, 1.0, 1.0);
+  material.setKs(0.7, raytracer.world.ka);
+  pos    = Vec(0, 0, 90.0);
+  normal = Vec(0, 0, -1.0);
+  raytracer.world.objs.push_back(new Plane(material, pos, normal));
+
+  material.n_shiny = 30.0;
+  material.color = Vec(1.0, 1.0, 1.0);
+  material.setKs(0.1, raytracer.world.ka);
+  pos    = Vec(90, 0, 0.0);
+  normal = Vec(-1, 0, 0);
+  raytracer.world.objs.push_back(new Plane(material, pos, normal));
+
+  material.n_shiny = 30.0;
+  material.color = Vec(1.0, 1.0, 0.0);
+  material.setKs(0.1, raytracer.world.ka);
+  pos    = Vec(-90, 0, 0.0);
+  normal = Vec(1, 0, 0);
+  raytracer.world.objs.push_back(new Plane(material, pos, normal));
+
+  material.n_shiny = 30.0;
+  material.color = Vec(0.0, 0.0, 1.0);
+  material.setKs(0.6, raytracer.world.ka);
+  pos    = Vec(0, 0, -90.0);
+  normal = Vec(0, 0, 1);
+  raytracer.world.objs.push_back(new Plane(material, pos, normal));
+
+  material.n_shiny = 30.0;
+  material.color = Vec(0.0, 1.0, 0.0);
+  material.setKs(0.1, raytracer.world.ka);
+  pos    = Vec(0, 90, 0.0);
+  normal = Vec(0, -1, 0);
+  raytracer.world.objs.push_back(new Plane(material, pos, normal));
+
+  material.n_shiny = 100.0;
+  material.color = Vec(1.0, 0.0, 0.0);
+  material.setKs(0.3, raytracer.world.ka);
+  pos    = Vec(0, -90, 0.0);
+  normal = Vec(0, 1, 0);
+  raytracer.world.objs.push_back(new Plane(material, pos, normal));
+
+  raytracer.world.lights.push_back( LightSource(Vec(5.0,5.0,-5.0), Vec(1.0,1.0,1.0)));
 };
 
 void spinLight()
 {
-  #define STEP_LIGHT_R 0.02f //5 graus
+  #define STEP_LIGHT_R 0.1f //5 graus
   static Vec axisY(0.0, 1.0, 0.0);
 
   glm::vec4 posLight(raytracer.world.lights.begin()->pos, 1.0);
